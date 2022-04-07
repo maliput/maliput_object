@@ -7,7 +7,7 @@ Runtime interface for performing spacial queries on Maliput.
 
 ## Build
 
-1. Setup a development workspace as described [here](https://github.com/ToyotaResearchInstitute/maliput_documentation/blob/main/docs/installation_quickstart.rst).
+1. Setup a development workspace as described [here](https://shiny-fiesta-6b790eb7.pages.github.io/installation_quickstart.html).
 
 2. Bring up your development workspace:
 
