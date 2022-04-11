@@ -12,6 +12,7 @@ project(maliput_object LANGUAGES C CXX VERSION 3.0.0)
 message(STATUS "\n\n====== Finding 3rd Party Packages ======\n")
 
 find_package(ament_cmake REQUIRED)
+find_package(maliput REQUIRED)
 
 ##############################################################################
 # Project Configuration
