@@ -12,11 +12,20 @@ namespace api {
 template <typename Coordinate>
 class BoundingRegion {
  public:
+  /// Holds the possible bounding overlapping types.
+  enum class OverlappingType {
+    kDisjointed = 0,  ///< No overlapping between bounding regions
+    kIntersected,     ///< Bounding regions intersects.
+    kContained        ///< Entire bounding region is contained within another.
+  };
+
   MALIPUT_OBJECT_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(BoundingRegion)
 
   virtual ~BoundingRegion() = default;
 
   /// Obtains the center coordinate of the bounding region in the Inertial-frame.
+  /// The center is defined as the centroid (center of area) of the bounding region,
+  /// which comes from considering the surface as having constant density.
   /// @returns The center coordinate.
   const Coordinate& center() const { return do_center(); }
 
@@ -25,15 +34,10 @@ class BoundingRegion {
   /// @returns True when @p position is contained in this bounding region.
   bool Contains(const Coordinate& position) const { return do_contains(position); }
 
-  /// Determines whether @p other BoundingRegion instance is contained in this bounding region.
+  /// Determines the overlapping type with @p other BoundingRegion instance.
   /// @param other Another BoundingRegion.
-  /// @returns True when @p other is contained in this bounding region.
-  bool Contains(const BoundingRegion<Coordinate>& other) const { return do_contains(other); }
-
-  /// Determines whether @p other BoundingRegion instance intersects this bounding region.
-  /// @param other Another BoundingRegion.
-  /// @returns True when @p other intersects this bounding region.
-  bool Intersects(const BoundingRegion<Coordinate>& other) const { return do_intersects(other); }
+  /// @returns The overlapping type.
+  OverlappingType Overlaps(const BoundingRegion<Coordinate>& other) const { do_overlaps(other); }
 
  protected:
   BoundingRegion() = default;
@@ -41,8 +45,7 @@ class BoundingRegion {
  private:
   virtual const Coordinate& do_center() const = 0;
   virtual bool do_contains(const Coordinate& position) const = 0;
-  virtual bool do_contains(const BoundingRegion<Coordinate>& other) const = 0;
-  virtual bool do_intersects(const BoundingRegion<Coordinate>& other) const = 0;
+  virtual OverlappingType do_overlaps(const BoundingRegion<Coordinate>& other) const = 0;
 };
 
 }  // namespace api

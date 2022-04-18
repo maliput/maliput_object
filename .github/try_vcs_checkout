@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2020 Toyota Research Institute
+# Copyright 2022 Toyota Research Institute
 
 CHANGE_BRANCH=$1
 SRC_FOLDER=$2
