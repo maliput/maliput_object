@@ -12,13 +12,14 @@
 
 namespace maliput {
 namespace object {
+namespace api {
 namespace test {
 namespace {
 
 using maliput::math::Vector3;
 
 // Mocks BoundaryRegion class hardcoding the api's return values.
-class MockBoundingRegion : public api::BoundingRegion<Vector3> {
+class MockBoundingRegion : public BoundingRegion<Vector3> {
  public:
   const Vector3& do_position() const override { return position_; }
   bool DoContains(const Vector3& position) const override { return contains_; }
@@ -44,29 +45,30 @@ class ObjectTest : public ::testing::Test {
     region_ = std::move(mock_region);
   }
 
-  const api::Object<Vector3>::Id kId{"ObjectTest"};
+  const Object<Vector3>::Id kId{"ObjectTest"};
   const Vector3 kExpectedPosition{1., 2., 3.};
-  const api::BoundingRegion<Vector3>::OverlappingType kExpectedOverlapping{
-      api::BoundingRegion<Vector3>::OverlappingType::kContained};
+  const BoundingRegion<Vector3>::OverlappingType kExpectedOverlapping{
+      BoundingRegion<Vector3>::OverlappingType::kContained};
   const std::map<std::string, std::string> kExpectedProperties{{"Key1", "Value1"}, {"Key2", "Value2"}};
-  std::unique_ptr<api::BoundingRegion<Vector3>> region_;
+  std::unique_ptr<BoundingRegion<Vector3>> region_;
 };
 
-TEST_F(ObjectTest, Constructor) { EXPECT_NO_THROW(api::Object<Vector3>(kId, {}, std::move(region_))); }
+TEST_F(ObjectTest, Constructor) { EXPECT_NO_THROW(Object<Vector3>(kId, {}, std::move(region_))); }
 
 TEST_F(ObjectTest, API) {
   const api::Object<Vector3> dut{kId, kExpectedProperties, std::move(region_)};
-  EXPECT_EQ(kId, dut.id());
-  EXPECT_EQ(kExpectedOverlapping, dut.bounding_region().Overlaps(MockBoundingRegion{}));
-  EXPECT_EQ(kExpectedPosition, dut.position());
-  EXPECT_EQ(kExpectedProperties, dut.get_properties());
+  ASSERT_EQ(kId, dut.id());
+  ASSERT_EQ(kExpectedOverlapping, dut.bounding_region().Overlaps(MockBoundingRegion{}));
+  ASSERT_EQ(kExpectedPosition, dut.position());
+  ASSERT_EQ(kExpectedProperties, dut.get_properties());
   const std::string kValidPropertyKey{kExpectedProperties.begin()->first};
-  EXPECT_EQ(kExpectedProperties.at(kValidPropertyKey), dut.get_property(kValidPropertyKey));
+  ASSERT_EQ(kExpectedProperties.at(kValidPropertyKey), dut.get_property(kValidPropertyKey));
   const std::string kInvalidPropertyKey{"invalid_key"};
-  EXPECT_EQ(std::nullopt, dut.get_property(kInvalidPropertyKey));
+  ASSERT_EQ(std::nullopt, dut.get_property(kInvalidPropertyKey));
 }
 
 }  // namespace
 }  // namespace test
+}  // namespace api
 }  // namespace object
 }  // namespace maliput
