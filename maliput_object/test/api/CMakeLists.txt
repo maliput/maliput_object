@@ -12,9 +12,9 @@ macro(add_dependencies_to_test target)
       )
 
       target_link_libraries(${target}
+          maliput_object::api
           maliput::common
           maliput::math
-          maliput_object::api
       )
 
     endif()
