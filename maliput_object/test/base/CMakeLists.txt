@@ -11,7 +11,8 @@ macro(add_dependencies_to_test target)
       )
 
       target_link_libraries(${target}
-          maliput_object::base
+        maliput::common
+        maliput_object::base
       )
 
     endif()

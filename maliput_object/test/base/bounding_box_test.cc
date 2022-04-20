@@ -1,6 +1,7 @@
 #include "maliput_object/base/bounding_box.h"
 
 #include <gtest/gtest.h>
+#include <maliput/common/assertion_error.h>
 
 namespace maliput {
 namespace object {
@@ -12,10 +13,10 @@ static constexpr double kTolerance{1e-12};
 TEST(BoundingBox, Constructors) {
   // Throws due to a negative tolerance value.
   EXPECT_THROW(
-      BoundingBox({1., 2., 3.} /* center */, {2., 2., 2.} /* box_size */, {0., 0., 0.} /* rpy */, -1 /* tolerance */),
+      BoundingBox({1., 2., 3.} /* position */, {2., 2., 2.} /* box_size */, {0., 0., 0.} /* rpy */, -1 /* tolerance */),
       maliput::common::assertion_error);
   // It doesn't throw.
-  EXPECT_NO_THROW(BoundingBox({1., 2., 3.} /* center */, {2., 2., 2.} /* box_size */, {0., 0., 0.} /* rpy */,
+  EXPECT_NO_THROW(BoundingBox({1., 2., 3.} /* position */, {2., 2., 2.} /* box_size */, {0., 0., 0.} /* rpy */,
                               1e-12 /* tolerance */););
 }
 
@@ -25,7 +26,7 @@ struct ExpectedPositionContainsResults {
 };
 
 struct BoundingBoxCase {
-  math::Vector3 center{};
+  math::Vector3 position{};
   math::Vector3 box_size{};
   math::RollPitchYaw rpy{};
 
@@ -37,7 +38,7 @@ std::vector<BoundingBoxCase> GetTestParameters() {
   return {
       // Centered at origin, no rotation.
       BoundingBoxCase{
-          {0., 0., 0.} /* center */,
+          {0., 0., 0.} /* position */,
           {2., 2., 2.} /* box_size */,
           {0., 0., 0.} /* rpy */,
           {
@@ -60,7 +61,7 @@ std::vector<BoundingBoxCase> GetTestParameters() {
       },
       // Centered away from origin, no rotation.
       BoundingBoxCase{
-          {10., 10., 10.} /* center */,
+          {10., 10., 10.} /* position */,
           {2., 2., 2.} /* box_size */,
           {0., 0., 0.} /* rpy */,
           {
@@ -83,7 +84,7 @@ std::vector<BoundingBoxCase> GetTestParameters() {
       },
       // Centered at origin, 45 degree yaw rotation.
       BoundingBoxCase{
-          {0., 0., 0.} /* center */,
+          {0., 0., 0.} /* position */,
           {2., 2., 2.} /* box_size */,
           {0., 0., M_PI_4} /* rpy */,
           {
@@ -111,7 +112,7 @@ std::vector<BoundingBoxCase> GetTestParameters() {
       },
       // Centered at origin, 45 degree pitch rotation.
       BoundingBoxCase{
-          {0., 0., 0.} /* center */,
+          {0., 0., 0.} /* position */,
           {2., 2., 2.} /* box_size */,
           {0., M_PI_4, 0.} /* rpy */,
           {
@@ -141,7 +142,7 @@ std::vector<BoundingBoxCase> GetTestParameters() {
       },
       // Centered at origin, 45 degree roll rotation.
       BoundingBoxCase{
-          {0., 0., 0.} /* center */,
+          {0., 0., 0.} /* position */,
           {2., 2., 2.} /* box_size */,
           {M_PI_4, 0., 0.} /* rpy */,
           {
@@ -179,7 +180,7 @@ class BoundingBoxTest : public ::testing::TestWithParam<BoundingBoxCase> {
 };
 
 TEST_P(BoundingBoxTest, ContainsPosition) {
-  BoundingBox dut{case_.center, case_.box_size, case_.rpy, kTolerance};
+  BoundingBox dut{case_.position, case_.box_size, case_.rpy, kTolerance};
 
   for (const auto expected_result : case_.expected_position_contains_results) {
     EXPECT_EQ(expected_result.contains_position, dut.Contains(expected_result.position))
@@ -189,7 +190,7 @@ TEST_P(BoundingBoxTest, ContainsPosition) {
 }
 
 TEST_P(BoundingBoxTest, GetVertices) {
-  BoundingBox dut{case_.center, case_.box_size, case_.rpy, kTolerance};
+  BoundingBox dut{case_.position, case_.box_size, case_.rpy, kTolerance};
   const auto vertices = dut.get_vertices();
   for (const auto& vertex : vertices) {
     const auto expected_vertex_itr =
@@ -206,25 +207,48 @@ TEST_P(BoundingBoxTest, GetVertices) {
 
 INSTANTIATE_TEST_CASE_P(BoundingBoxTestGroup, BoundingBoxTest, ::testing::ValuesIn(GetTestParameters()));
 
-class BoundingBoxContainsTest : public ::testing::Test {};
+class BoundingBoxOverlappingTest : public ::testing::Test {
+ public:
+  const math::Vector3 position{1., 2., 3.};
+  const math::Vector3 box_size{4., 4., 4.};
+  const math::RollPitchYaw rpy{M_PI_4, M_PI_4, M_PI_4};
+  const BoundingBox dut{position, box_size, rpy, kTolerance};
+};
 
-// Tests Contains method on another BoundingBox.
+// Tests IsBoxContained method on another BoundingBox.
 // This method is implemented using `get_vertices` method and `Contains` method for positions, which were already
 // tested.
-TEST_F(BoundingBoxContainsTest, ContainsBoundingBox) {
-  math::Vector3 center{1., 2., 3.};
-  math::Vector3 box_size{4., 4., 4.};
-  math::RollPitchYaw rpy{M_PI_4, M_PI_4, M_PI_4};
-  BoundingBox dut{center, box_size, rpy, kTolerance};
-
+TEST_F(BoundingBoxOverlappingTest, IsBoxContained) {
   // Smaller cube in same location and orientation. -> It contains it.
-  EXPECT_TRUE(dut.Contains(BoundingBox(center, {3., 3., 3.}, rpy, kTolerance)));
+  EXPECT_TRUE(dut.IsBoxContained(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
   // Larger cube in same location and orientation. -> It doesn't contain it.
-  EXPECT_FALSE(dut.Contains(BoundingBox(center, {5., 5., 5.}, rpy, kTolerance)));
+  EXPECT_FALSE(dut.IsBoxContained(BoundingBox(position, {5., 5., 5.}, rpy, kTolerance)));
   // Same cube in same location and orientation. -> It contains it.
-  EXPECT_TRUE(dut.Contains(BoundingBox(center, box_size, rpy, kTolerance)));
-  // Same cube in same location and different orientation. -> It doesn't contains it.
-  EXPECT_FALSE(dut.Contains(BoundingBox(center, box_size, {0., 0., 0.}, kTolerance)));
+  EXPECT_TRUE(dut.IsBoxContained(BoundingBox(position, box_size, rpy, kTolerance)));
+  // Same cube in different location and same orientation. -> It doesn't contain it.
+  EXPECT_FALSE(dut.IsBoxContained(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
+  // Same cube in same location and different orientation. -> It doesn't contain it.
+  EXPECT_FALSE(dut.IsBoxContained(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
+}
+
+TEST_F(BoundingBoxOverlappingTest, IsBoxIntersected) {
+  // TODO: Adds tests when IsBoxIntersected is implemented.
+}
+
+TEST_F(BoundingBoxOverlappingTest, Overlaps) {
+  // Tests from BoundingRegion API.
+  std::unique_ptr<api::BoundingRegion<math::Vector3>> region = std::make_unique<BoundingBox>(dut);
+  // Smaller cube in same location and orientation. -> OverlappingType::kContained.
+  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kContained,
+            region->Overlaps(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
+  // Same cube in same location and orientation. -> OverlappingType::kContained.
+  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kContained,
+            region->Overlaps(BoundingBox(position, box_size, rpy, kTolerance)));
+  // Same cube in different location and same orientation. -> OverlappingType::kDisjointed.
+  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kDisjointed,
+            region->Overlaps(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
+
+  // TODO: Adds tests for OverlappingType::kIntersected
 }
 
 }  // namespace
