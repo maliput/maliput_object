@@ -64,6 +64,9 @@ class BoundingBox : public api::BoundingRegion<maliput::math::Vector3> {
   maliput::math::Vector3 box_size_;
   maliput::math::RollPitchYaw orientation_;
   double tolerance_{};
+
+  // Half sized box dimensions.
+  maliput::math::Vector3 xyz_2_;
 };
 
 }  // namespace object
