@@ -1,4 +1,5 @@
 ament_add_gtest(bounding_region_test bounding_region_test.cc)
+ament_add_gtest(object_test object_test.cc)
 
 macro(add_dependencies_to_test target)
     if (TARGET ${target})
@@ -11,6 +12,7 @@ macro(add_dependencies_to_test target)
       )
 
       target_link_libraries(${target}
+          maliput_object::api
           maliput::common
           maliput::math
       )
@@ -19,3 +21,4 @@ macro(add_dependencies_to_test target)
 endmacro()
 
 add_dependencies_to_test(bounding_region_test)
+add_dependencies_to_test(object_test)
