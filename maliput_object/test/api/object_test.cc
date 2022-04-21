@@ -9,6 +9,7 @@
 #include <maliput/math/vector.h>
 
 #include "maliput_object/api/bounding_region.h"
+#include "maliput_object/test_utilities/mock.h"
 
 namespace maliput {
 namespace object {
@@ -39,7 +40,7 @@ class MockBoundingRegion : public BoundingRegion<Vector3> {
 class ObjectTest : public ::testing::Test {
  public:
   void SetUp() override {
-    auto mock_region = std::make_unique<MockBoundingRegion>();
+    auto mock_region = std::make_unique<test_utilities::MockBoundingRegion>();
     mock_region->SetPosition(kExpectedPosition);
     mock_region->SetOverlappingType(kExpectedOverlapping);
     region_ = std::move(mock_region);
@@ -58,7 +59,7 @@ TEST_F(ObjectTest, Constructor) { EXPECT_NO_THROW(Object<Vector3>(kId, {}, std::
 TEST_F(ObjectTest, API) {
   const api::Object<Vector3> dut{kId, kExpectedProperties, std::move(region_)};
   ASSERT_EQ(kId, dut.id());
-  ASSERT_EQ(kExpectedOverlapping, dut.bounding_region().Overlaps(MockBoundingRegion{}));
+  ASSERT_EQ(kExpectedOverlapping, dut.bounding_region().Overlaps(test_utilities::MockBoundingRegion{}));
   ASSERT_EQ(kExpectedPosition, dut.position());
   ASSERT_EQ(kExpectedProperties, dut.get_properties());
   const std::string kValidPropertyKey{kExpectedProperties.begin()->first};
