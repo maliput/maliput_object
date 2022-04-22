@@ -56,23 +56,6 @@ class MockObjectBook : public api::ObjectBook<maliput::math::Vector3> {
         objects_by_predicate_(objects_by_predicate),
         objects_by_overlapping_(objects_by_overlapping) {}
 
-  std::unordered_map<api::Object<maliput::math::Vector3>::Id, api::Object<maliput::math::Vector3>*> do_objects()
-      const override {
-    return objects_;
-  }
-  api::Object<maliput::math::Vector3>* DoFindBy(const api::Object<maliput::math::Vector3>::Id&) const override {
-    return object_by_id_;
-  }
-  std::vector<api::Object<maliput::math::Vector3>*> DoFindBy(
-      std::function<bool(const api::Object<maliput::math::Vector3>*)>) const override {
-    return objects_by_predicate_;
-  }
-  std::vector<api::Object<maliput::math::Vector3>*> DoFindOverlappingIn(
-      const api::BoundingRegion<maliput::math::Vector3>&,
-      const std::optional<api::BoundingRegion<maliput::math::Vector3>::OverlappingType>&) const override {
-    return objects_by_overlapping_;
-  }
-
   /// @param objects Objects to be returned when calling Objects() method.
   void SetObjects(const std::unordered_map<api::Object<maliput::math::Vector3>::Id,
                                            api::Object<maliput::math::Vector3>*>& objects) {
@@ -90,6 +73,23 @@ class MockObjectBook : public api::ObjectBook<maliput::math::Vector3> {
   }
 
  private:
+  std::unordered_map<api::Object<maliput::math::Vector3>::Id, api::Object<maliput::math::Vector3>*> do_objects()
+      const override {
+    return objects_;
+  }
+  api::Object<maliput::math::Vector3>* DoFindBy(const api::Object<maliput::math::Vector3>::Id&) const override {
+    return object_by_id_;
+  }
+  std::vector<api::Object<maliput::math::Vector3>*> DoFindBy(
+      std::function<bool(const api::Object<maliput::math::Vector3>*)>) const override {
+    return objects_by_predicate_;
+  }
+  std::vector<api::Object<maliput::math::Vector3>*> DoFindOverlappingIn(
+      const api::BoundingRegion<maliput::math::Vector3>&,
+      const std::optional<api::BoundingRegion<maliput::math::Vector3>::OverlappingType>&) const override {
+    return objects_by_overlapping_;
+  }
+
   std::unordered_map<api::Object<maliput::math::Vector3>::Id, api::Object<maliput::math::Vector3>*> objects_;
   api::Object<maliput::math::Vector3>* object_by_id_;
   std::vector<api::Object<maliput::math::Vector3>*> objects_by_predicate_;
