@@ -23,25 +23,25 @@ class ObjectBook {
   MALIPUT_NO_COPY_NO_MOVE_NO_ASSIGN(ObjectBook)
   virtual ~ObjectBook() = default;
 
+  /// Gets all the Objects in the book.
+  /// @returns A unordered map, from which key and value are Object::Id and pointer to Object respectively.
+  std::unordered_map<typename Object<Coordinate>::Id, Object<Coordinate>*> objects() const { return do_objects(); }
+
   /// Finds Object by Id.
   /// @param object_id An Object::Id.
   /// @returns A valid Object's pointer if found, nullptr otherwise.
   Object<Coordinate>* FindBy(const typename Object<Coordinate>::Id& object_id) const { return DoFindBy(object_id); }
 
-  /// Gets all the Objects in the book.
-  /// @returns A unordered map, from which key and value are Object::Id and pointer to Object respectively.
-  std::unordered_map<typename Object<Coordinate>::Id, Object<Coordinate>*> objects() const { return do_objects(); }
-
-  /// Finds the Objects that make @p predicate to be true.
-  /// @param predicate Unary precate to be used for evaluating an object characteristic.
+  /// Finds the Objects that make @p predicate true.
+  /// @param predicate Unary predicate for evaluating an object.
   std::vector<Object<Coordinate>*> FindBy(std::function<bool(const Object<Coordinate>*)> predicate) const {
     return DoFindBy(predicate);
   }
 
-  /// Finds the Objects that intersect with an spacial location delimited by @p region .
+  /// Finds the Objects that intersect with a @p region .
   /// @param region BoundaryRegion used for finding intersected Objects.
-  /// @param overlapping_type Optional argument for adding the overlapping type as a constraint. By default it is
-  /// std::nullopt.
+  /// @param overlapping_type Optional argument for adding the overlapping type as a constraint.
+  ///                         By default it is std::nullopt.
   /// @returns The Objects intersecting @p region with the given @p overlapping_type .
   std::vector<Object<Coordinate>*> FindOverlappingIn(
       const BoundingRegion<Coordinate>& region,
