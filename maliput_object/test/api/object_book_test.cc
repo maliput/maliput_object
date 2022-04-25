@@ -1,10 +1,13 @@
 // Copyright 2022 Toyota Research Institute
 #include "maliput_object/api/object_book.h"
 
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
+#include <unordered_map>
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <maliput/math/vector.h>
 
@@ -20,49 +23,27 @@ namespace {
 
 using maliput::math::Vector3;
 
-class ObjectBookTest : public ::testing::Test {
- public:
-  void SetUp() override {}
-
-  static std::unique_ptr<Object<Vector3>> CreateObject(const std::string& id,
-                                                       std::map<std::string, std::string> properties,
-                                                       std::unique_ptr<BoundingRegion<Vector3>> region) {
-    return std::make_unique<Object<Vector3>>(Object<Vector3>::Id{id}, properties, std::move(region));
-  }
-
-  const std::map<std::string, std::string> kArbitraryProperties{{"property_1", "value_1"}, {"property_2", "value_2"}};
-  std::unique_ptr<Object<Vector3>> object_1 =
-      CreateObject("object_1", kArbitraryProperties, std::make_unique<test_utilities::MockBoundingRegion>());
-  std::unique_ptr<Object<Vector3>> object_2 =
-      CreateObject("object_2", kArbitraryProperties, std::make_unique<test_utilities::MockBoundingRegion>());
-  std::unique_ptr<Object<Vector3>> object_3 =
-      CreateObject("object_3", kArbitraryProperties, std::make_unique<test_utilities::MockBoundingRegion>());
-  std::unique_ptr<Object<Vector3>> object_4 =
-      CreateObject("object_4", kArbitraryProperties, std::make_unique<test_utilities::MockBoundingRegion>());
-
-  const std::unordered_map<api::Object<Vector3>::Id, api::Object<Vector3>*> expected_objects{
-      {object_1->id(), object_1.get()},
-      {object_2->id(), object_2.get()},
-      {object_3->id(), object_3.get()},
-      {object_4->id(), object_4.get()}};
-  api::Object<Vector3>* expected_object_by_id{object_1.get()};
-  const std::vector<api::Object<Vector3>*> expected_objects_by_predicate{{object_2.get(), object_3.get()}};
-  const std::vector<api::Object<Vector3>*> expected_objects_by_overlapping{{object_3.get(), object_4.get()}};
-};
-
-// Tests ObjectBook API.
-TEST_F(ObjectBookTest, API) {
-  std::unique_ptr<ObjectBook<Vector3>> dut = std::make_unique<test_utilities::MockObjectBook>(
-      expected_objects, expected_object_by_id, expected_objects_by_predicate, expected_objects_by_overlapping);
-  EXPECT_EQ(expected_objects, dut->objects());
-  EXPECT_EQ(expected_object_by_id, dut->FindBy(object_1->id()));
-  EXPECT_EQ(expected_objects_by_predicate, dut->FindBy([](const Object<Vector3>*) -> bool {
-    return true; /* My predicate */
-  }));
-  const auto kArbitraryBoundingRegion = std::make_unique<test_utilities::MockBoundingRegion>();
-  EXPECT_EQ(expected_objects_by_overlapping, dut->FindOverlappingIn(*kArbitraryBoundingRegion));
-  EXPECT_EQ(expected_objects_by_overlapping,
-            dut->FindOverlappingIn(*kArbitraryBoundingRegion, BoundingRegion<Vector3>::OverlappingType::kIntersected));
+TEST(ObjectBookTest, API) {
+  test_utilities::MockObjectBook<Vector3> dut;
+  const api::Object<Vector3>::Id kId{"id"};
+  const test_utilities::MockBoundingRegion kBoundingRegion{};
+  const api::OverlappingType kOverlappingType{OverlappingType::kContained | OverlappingType::kIntersected};
+  const std::unordered_map<api::Object<Vector3>::Id, api::Object<Vector3>*> kExpectedObjects{};
+  std::unique_ptr<api::Object<Vector3>> kExpectedObjectById = std::make_unique<api::Object<Vector3>>(
+      kId, std::map<std::string, std::string>{}, std::make_unique<test_utilities::MockBoundingRegion>());
+  const std::vector<api::Object<Vector3>*> kExpectedObjectsByPredicate{kExpectedObjectById.get()};
+  const std::vector<api::Object<Vector3>*> kExpectedObjectsByOverlapping{kExpectedObjectsByPredicate};
+  const std::function<bool(const api::Object<Vector3>*)> kPredicate = [](const api::Object<Vector3>*) { return true; };
+  EXPECT_CALL(dut, do_objects()).Times(1).WillOnce(::testing::Return(kExpectedObjects));
+  EXPECT_CALL(dut, DoFindById(kId)).Times(1).WillOnce(::testing::Return(kExpectedObjectById.get()));
+  EXPECT_CALL(dut, DoFindByPredicate(::testing::_)).Times(1).WillOnce(::testing::Return(kExpectedObjectsByPredicate));
+  EXPECT_CALL(dut, DoFindOverlappingIn(::testing::_, kOverlappingType))
+      .Times(1)
+      .WillOnce(::testing::Return(kExpectedObjectsByOverlapping));
+  EXPECT_EQ(kExpectedObjects, dut.objects());
+  EXPECT_EQ(kExpectedObjectById.get(), dut.FindById(kId));
+  EXPECT_EQ(kExpectedObjectsByPredicate, dut.FindByPredicate(kPredicate));
+  EXPECT_EQ(kExpectedObjectsByOverlapping, dut.FindOverlappingIn(kBoundingRegion, kOverlappingType));
 }
 
 }  // namespace
