@@ -17,9 +17,9 @@ namespace maliput {
 namespace object {
 namespace api {
 
-/// Interface for performing queries on top of Maliput's RoadNetwork.
+/// Interface to perform queries on top of Maliput's RoadNetwork about Objects.
 /// To match convention of underlying RoadNetwork, the query interface use maliput::math::Vector3
-/// as Coordinate template argument for defining the coordinate system.
+/// as the specialization of the Coordinate template argument.
 class ObjectQuery {
  public:
   MALIPUT_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(ObjectQuery)
