@@ -26,38 +26,39 @@ using maliput::math::Vector3;
 
 class ObjectQueryTest : public ::testing::Test {
  public:
-  void SetUp() override {}
-
-  std::unique_ptr<api::ObjectBook<Vector3>> object_book_ = std::make_unique<test_utilities::MockObjectBook<Vector3>>();
-  std::unique_ptr<maliput::api::RoadNetwork> road_network_ = maliput::api::test::CreateRoadNetwork();
-  std::unique_ptr<maliput::api::Lane> lane_1_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_1"});
-  std::unique_ptr<maliput::api::Lane> lane_2_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_2"});
-  std::unique_ptr<maliput::api::Lane> lane_3_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_3"});
-
+  const std::unique_ptr<api::ObjectBook<Vector3>> object_book_ =
+      std::make_unique<test_utilities::MockObjectBook<Vector3>>();
+  const std::unique_ptr<maliput::api::RoadNetwork> road_network_ = maliput::api::test::CreateRoadNetwork();
+  const std::unique_ptr<maliput::api::Lane> lane_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_1"});
+  const Object<Vector3> kObject{
+      Object<Vector3>::Id{"test_object"}, {}, std::make_unique<test_utilities::MockBoundingRegion>()};
+  const api::OverlappingType kOverlappingType{api::OverlappingType::kContained};
   const api::ObjectBook<maliput::math::Vector3>* kExpectedObjectBook{object_book_.get()};
   const maliput::api::RoadNetwork* kExpectedRoadNetwork{road_network_.get()};
-  std::vector<const maliput::api::Lane*> kExpectedOverlappingsLanesIn{lane_1_.get(), lane_2_.get()};
-  std::vector<const maliput::api::Lane*> kExpectedOverlappingsLanesInByType{lane_2_.get(), lane_3_.get()};
-  std::optional<const maliput::api::LaneSRoute> kExpectedRoute{
+  const std::vector<const maliput::api::Lane*> kExpectedOverlappingsLanesIn{lane_.get()};
+  const std::vector<const maliput::api::Lane*> kExpectedOverlappingsLanesInByType{kExpectedOverlappingsLanesIn};
+  const std::optional<const maliput::api::LaneSRoute> kExpectedRoute{
       std::make_optional<>(maliput::api::test::CreateLaneSRoute())};
 };
 
 // Tests ObjectBook API.
 TEST_F(ObjectQueryTest, API) {
-  std::unique_ptr<api::ObjectQuery> dut = std::make_unique<test_utilities::MockObjectQuery>(
-      kExpectedObjectBook, kExpectedRoadNetwork, kExpectedOverlappingsLanesIn, kExpectedOverlappingsLanesInByType,
-      kExpectedRoute.value());
+  const test_utilities::MockObjectQuery dut;
+  EXPECT_CALL(dut, do_road_network()).Times(1).WillOnce(::testing::Return(kExpectedRoadNetwork));
+  EXPECT_CALL(dut, do_object_book()).Times(1).WillOnce(::testing::Return(kExpectedObjectBook));
+  EXPECT_CALL(dut, DoFindOverlappingLanesIn(&kObject))
+      .Times(1)
+      .WillOnce(::testing::Return(kExpectedOverlappingsLanesIn));
+  EXPECT_CALL(dut, DoFindOverlappingLanesIn(&kObject, kOverlappingType))
+      .Times(1)
+      .WillOnce(::testing::Return(kExpectedOverlappingsLanesInByType));
+  EXPECT_CALL(dut, DoRoute(&kObject, &kObject)).Times(1).WillOnce(::testing::Return(kExpectedRoute));
 
-  ASSERT_NE(dut, nullptr);
-  EXPECT_EQ(kExpectedObjectBook, dut->object_book());
-  EXPECT_EQ(kExpectedRoadNetwork, dut->road_network());
-
-  const Object<Vector3> kObject{
-      Object<Vector3>::Id{"test_object"}, {}, std::make_unique<test_utilities::MockBoundingRegion>()};
-  EXPECT_EQ(kExpectedOverlappingsLanesIn, dut->FindOverlappingLanesIn(&kObject));
-  EXPECT_EQ(kExpectedOverlappingsLanesInByType,
-            dut->FindOverlappingLanesIn(&kObject, api::OverlappingType::kIntersected));
-  EXPECT_EQ(kExpectedRoute.value().length(), dut->Route(&kObject, &kObject).value().length());
+  EXPECT_EQ(kExpectedObjectBook, dut.object_book());
+  EXPECT_EQ(kExpectedRoadNetwork, dut.road_network());
+  EXPECT_EQ(kExpectedOverlappingsLanesIn, dut.FindOverlappingLanesIn(&kObject));
+  EXPECT_EQ(kExpectedOverlappingsLanesInByType, dut.FindOverlappingLanesIn(&kObject, kOverlappingType));
+  EXPECT_EQ(kExpectedRoute.value().length(), dut.Route(&kObject, &kObject).value().length());
 }
 
 }  // namespace
