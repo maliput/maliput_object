@@ -18,9 +18,9 @@ namespace object {
 namespace api {
 
 /// Book for Objects in a given @p Coordinate system.
-/// TODO(issue#14): ObjectBook should be capable of holding all Objects regardless of the Coordinate that
-/// determines their spatial characteristics.
-///                          When finding by regions it should be able of filtering by coordinate type.
+/// TODO(#14): ObjectBook should be capable of holding all Objects regardless of the Coordinate that
+///            determines their spatial characteristics. When finding by regions it should be able of filtering by
+///            coordinate type.
 template <typename Coordinate>
 class ObjectBook {
  public:
