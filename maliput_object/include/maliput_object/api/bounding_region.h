@@ -3,6 +3,8 @@
 
 #include <maliput/common/maliput_copyable.h>
 
+#include "maliput_object/api/overlapping_type.h"
+
 namespace maliput {
 namespace object {
 namespace api {
@@ -12,13 +14,6 @@ namespace api {
 template <typename Coordinate>
 class BoundingRegion {
  public:
-  /// Holds the possible bounding overlapping types.
-  enum class OverlappingType {
-    kDisjointed = 0,  ///< No overlapping between bounding regions
-    kIntersected,     ///< Bounding regions intersects.
-    kContained        ///< Entire bounding region is contained within another.
-  };
-
   MALIPUT_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(BoundingRegion)
 
   virtual ~BoundingRegion() = default;
