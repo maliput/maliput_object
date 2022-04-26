@@ -232,7 +232,14 @@ TEST_F(BoundingBoxOverlappingTest, IsBoxContained) {
 }
 
 TEST_F(BoundingBoxOverlappingTest, IsBoxIntersected) {
-  // TODO: Adds tests when IsBoxIntersected is implemented.
+  // Smaller cube in same location and orientation. -> It contains it, there is no intersection.
+  EXPECT_FALSE(dut.IsBoxIntersected(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
+  // Larger cube in same location and orientation. -> Intersects.
+  EXPECT_TRUE(dut.IsBoxIntersected(BoundingBox(position, {5., 5., 5.}, rpy, kTolerance)));
+  // Same cube in same location and different orientation. -> Intersects.
+  EXPECT_TRUE(dut.IsBoxIntersected(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
+  // Same cube in different location and same orientation. -> It doesn't intersect.
+  EXPECT_FALSE(dut.IsBoxIntersected(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
 }
 
 TEST_F(BoundingBoxOverlappingTest, Overlaps) {
@@ -247,7 +254,8 @@ TEST_F(BoundingBoxOverlappingTest, Overlaps) {
   // Same cube in different location and same orientation. -> OverlappingType::kDisjointed.
   EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kDisjointed,
             region->Overlaps(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
-
+  // Same cube in same location and different orientation. -> OverlappingType::kIntersected.
+  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kIntersected, region->Overlaps(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
   // TODO: Adds tests for OverlappingType::kIntersected
 }
 
