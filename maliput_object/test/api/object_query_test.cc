@@ -1,5 +1,5 @@
 // Copyright 2022 Toyota Research Institute
-#include "maliput_object/api/object_maliput_query.h"
+#include "maliput_object/api/object_query.h"
 
 #include <memory>
 #include <optional>
@@ -24,7 +24,7 @@ namespace {
 
 using maliput::math::Vector3;
 
-class ObjectMaliputQueryTest : public ::testing::Test {
+class ObjectQueryTest : public ::testing::Test {
  public:
   void SetUp() override {}
 
@@ -43,8 +43,8 @@ class ObjectMaliputQueryTest : public ::testing::Test {
 };
 
 // Tests ObjectBook API.
-TEST_F(ObjectMaliputQueryTest, API) {
-  std::unique_ptr<api::ObjectMaliputQuery> dut = std::make_unique<test_utilities::MockObjectMaliputQuery>(
+TEST_F(ObjectQueryTest, API) {
+  std::unique_ptr<api::ObjectQuery> dut = std::make_unique<test_utilities::MockObjectQuery>(
       kExpectedObjectBook, kExpectedRoadNetwork, kExpectedOverlappingsLanesIn, kExpectedOverlappingsLanesInByType,
       kExpectedRoute.value());
 

@@ -11,7 +11,7 @@
 #include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
-#include "maliput_object/api/object_maliput_query.h"
+#include "maliput_object/api/object_query.h"
 #include "maliput_object/api/overlapping_type.h"
 
 namespace maliput {
@@ -38,23 +38,23 @@ class MockObjectBook : public api::ObjectBook<Coordinate> {
               (const api::BoundingRegion<Coordinate>&, const api::OverlappingType&), (const, override));
 };
 
-/// Mocks ObjectMaliputQuery class hardcoding the api's return values.
-class MockObjectMaliputQuery : public api::ObjectMaliputQuery {
+/// Mocks ObjectQuery class hardcoding the api's return values.
+class MockObjectQuery : public api::ObjectQuery {
  public:
-  MockObjectMaliputQuery() = default;
+  MockObjectQuery() = default;
 
-  /// Constructs a MockObjectMaliputQuery.
+  /// Constructs a MockObjectQuery.
   /// @param object_book ObjectBook to be returned when calling object_book() method.
   /// @param road_network RoadNetwork to be returned when calling road_network() method.
   /// @param lanes_by_object Lanes to be returned when calling FindOverlappingLanesIn() method.
   /// @param lanes_by_overlapping_type Lanes to be returned when calling FindOverlappingLanesIn() method with an
   /// overlapping type.
   /// @param lane_s_route LaneSRoute to be returned when calling Route() method.
-  MockObjectMaliputQuery(const api::ObjectBook<maliput::math::Vector3>* object_book,
-                         const maliput::api::RoadNetwork* road_network,
-                         const std::vector<const maliput::api::Lane*>& lanes_by_object,
-                         const std::vector<const maliput::api::Lane*>& lanes_by_overlapping_type,
-                         const maliput::api::LaneSRoute& lane_s_route)
+  MockObjectQuery(const api::ObjectBook<maliput::math::Vector3>* object_book,
+                  const maliput::api::RoadNetwork* road_network,
+                  const std::vector<const maliput::api::Lane*>& lanes_by_object,
+                  const std::vector<const maliput::api::Lane*>& lanes_by_overlapping_type,
+                  const maliput::api::LaneSRoute& lane_s_route)
       : object_book_(object_book),
         road_network_(road_network),
         lanes_by_object_(lanes_by_object),

@@ -20,11 +20,11 @@ namespace api {
 /// Interface for performing queries on top of Maliput's RoadNetwork.
 /// To match convention of underlying RoadNetwork, the query interface use maliput::math::Vector3
 /// as Coordinate template argument for defining the coordinate system.
-class ObjectMaliputQuery {
+class ObjectQuery {
  public:
-  MALIPUT_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(ObjectMaliputQuery)
+  MALIPUT_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(ObjectQuery)
 
-  virtual ~ObjectMaliputQuery() = default;
+  virtual ~ObjectQuery() = default;
 
   /// Finds all the lanes overlapping with @p object .
   /// @param object Object to find lanes overlapping with.
@@ -57,7 +57,7 @@ class ObjectMaliputQuery {
   const maliput::api::RoadNetwork* road_network() const { return do_road_network(); }
 
  protected:
-  ObjectMaliputQuery() = default;
+  ObjectQuery() = default;
 
  private:
   virtual std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(
