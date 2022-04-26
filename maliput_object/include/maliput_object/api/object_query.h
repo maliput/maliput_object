@@ -9,9 +9,9 @@
 #include <maliput/common/maliput_copyable.h>
 #include <maliput/math/vector.h>
 
-#include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
+#include "maliput_object/api/overlapping_type.h"
 
 namespace maliput {
 namespace object {
@@ -37,9 +37,8 @@ class ObjectQuery {
   /// @param object Object to find lanes overlapping with.
   /// @param overlapping_type Type of overlapping to find.
   /// @returns A vector of pointers to lanes overlapping with @p object .
-  std::vector<const maliput::api::Lane*> FindOverlappingLanesIn(
-      const Object<maliput::math::Vector3>* object,
-      const BoundingRegion<maliput::math::Vector3>::OverlappingType& overlapping_type) const {
+  std::vector<const maliput::api::Lane*> FindOverlappingLanesIn(const Object<maliput::math::Vector3>* object,
+                                                                const OverlappingType& overlapping_type) const {
     return DoFindOverlappingLanesIn(object, overlapping_type);
   }
 
@@ -63,8 +62,7 @@ class ObjectQuery {
   virtual std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(
       const Object<maliput::math::Vector3>* object) const = 0;
   virtual std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(
-      const Object<maliput::math::Vector3>* object,
-      const BoundingRegion<maliput::math::Vector3>::OverlappingType& overlapping_type) const = 0;
+      const Object<maliput::math::Vector3>* object, const OverlappingType& overlapping_type) const = 0;
   virtual std::optional<const maliput::api::LaneSRoute> DoRoute(const Object<maliput::math::Vector3>* origin,
                                                                 const Object<maliput::math::Vector3>* target) const = 0;
   virtual const ObjectBook<maliput::math::Vector3>* do_object_book() const = 0;

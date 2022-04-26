@@ -83,8 +83,7 @@ class MockObjectQuery : public api::ObjectQuery {
     return lanes_by_object_;
   }
   std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(
-      const api::Object<maliput::math::Vector3>* object,
-      const api::BoundingRegion<maliput::math::Vector3>::OverlappingType& overlapping_type) const override {
+      const api::Object<maliput::math::Vector3>* object, const api::OverlappingType& overlapping_type) const override {
     return lanes_by_overlapping_type_;
   }
   std::optional<const maliput::api::LaneSRoute> DoRoute(

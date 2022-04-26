@@ -28,7 +28,7 @@ class ObjectQueryTest : public ::testing::Test {
  public:
   void SetUp() override {}
 
-  std::unique_ptr<api::ObjectBook<Vector3>> object_book_ = std::make_unique<test_utilities::MockObjectBook>();
+  std::unique_ptr<api::ObjectBook<Vector3>> object_book_ = std::make_unique<test_utilities::MockObjectBook<Vector3>>();
   std::unique_ptr<maliput::api::RoadNetwork> road_network_ = maliput::api::test::CreateRoadNetwork();
   std::unique_ptr<maliput::api::Lane> lane_1_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_1"});
   std::unique_ptr<maliput::api::Lane> lane_2_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_2"});
@@ -56,7 +56,7 @@ TEST_F(ObjectQueryTest, API) {
       Object<Vector3>::Id{"test_object"}, {}, std::make_unique<test_utilities::MockBoundingRegion>()};
   EXPECT_EQ(kExpectedOverlappingsLanesIn, dut->FindOverlappingLanesIn(&kObject));
   EXPECT_EQ(kExpectedOverlappingsLanesInByType,
-            dut->FindOverlappingLanesIn(&kObject, api::BoundingRegion<Vector3>::OverlappingType::kIntersected));
+            dut->FindOverlappingLanesIn(&kObject, api::OverlappingType::kIntersected));
   EXPECT_EQ(kExpectedRoute.value().length(), dut->Route(&kObject, &kObject).value().length());
 }
 
