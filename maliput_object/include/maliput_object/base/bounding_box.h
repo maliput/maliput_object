@@ -8,6 +8,7 @@
 #include <maliput/math/vector.h>
 
 #include "maliput_object/api/bounding_region.h"
+#include "maliput_object/api/overlapping_type.h"
 
 namespace maliput {
 namespace object {
@@ -58,7 +59,7 @@ class BoundingBox : public api::BoundingRegion<maliput::math::Vector3> {
   ///  - BoundingBox
   /// @param other Another bounding region.
   /// @returns The overlapping type.
-  OverlappingType DoOverlaps(const api::BoundingRegion<maliput::math::Vector3>& other) const override;
+  api::OverlappingType DoOverlaps(const api::BoundingRegion<maliput::math::Vector3>& other) const override;
 
   maliput::math::Vector3 position_;
   maliput::math::Vector3 box_size_;

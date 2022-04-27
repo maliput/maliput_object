@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 #include <maliput/common/assertion_error.h>
 
+#include "maliput_object/api/overlapping_type.h"
+
 namespace maliput {
 namespace object {
 namespace test {
@@ -246,16 +248,15 @@ TEST_F(BoundingBoxOverlappingTest, Overlaps) {
   // Tests from BoundingRegion API.
   std::unique_ptr<api::BoundingRegion<math::Vector3>> region = std::make_unique<BoundingBox>(dut);
   // Smaller cube in same location and orientation. -> OverlappingType::kContained.
-  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kContained,
-            region->Overlaps(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
+  EXPECT_EQ(api::OverlappingType::kContained, region->Overlaps(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
   // Same cube in same location and orientation. -> OverlappingType::kContained.
-  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kContained,
-            region->Overlaps(BoundingBox(position, box_size, rpy, kTolerance)));
+  EXPECT_EQ(api::OverlappingType::kContained, region->Overlaps(BoundingBox(position, box_size, rpy, kTolerance)));
   // Same cube in different location and same orientation. -> OverlappingType::kDisjointed.
-  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kDisjointed,
+  EXPECT_EQ(api::OverlappingType::kDisjointed,
             region->Overlaps(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
   // Same cube in same location and different orientation. -> OverlappingType::kIntersected.
-  EXPECT_EQ(api::BoundingRegion<math::Vector3>::OverlappingType::kIntersected, region->Overlaps(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
+  EXPECT_EQ(api::OverlappingType::kIntersected,
+            region->Overlaps(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
   // TODO: Adds tests for OverlappingType::kIntersected
 }
 

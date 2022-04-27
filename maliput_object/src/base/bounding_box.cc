@@ -39,16 +39,16 @@ bool BoundingBox::DoContains(const maliput::math::Vector3& position) const {
          box_frame_position.z() <= xyz_2_.z() + tolerance_ && box_frame_position.z() >= -xyz_2_.z() - tolerance_;
 }
 
-BoundingBox::OverlappingType BoundingBox::DoOverlaps(const api::BoundingRegion<maliput::math::Vector3>& other) const {
+api::OverlappingType BoundingBox::DoOverlaps(const api::BoundingRegion<maliput::math::Vector3>& other) const {
   auto other_box = dynamic_cast<const BoundingBox*>(&other);
   MALIPUT_VALIDATE(other_box != nullptr, "BoundingRegion's implementations supported: BoundingBox.");
   if (IsBoxContained(*other_box)) {
-    return BoundingBox::OverlappingType::kContained;
+    return api::OverlappingType::kContained;
   }
   if (IsBoxIntersected(*other_box)) {
-    return BoundingBox::OverlappingType::kIntersected;
+    return api::OverlappingType::kIntersected;
   }
-  return BoundingBox::OverlappingType::kDisjointed;
+  return api::OverlappingType::kDisjointed;
 }
 
 bool BoundingBox::IsBoxContained(const BoundingBox& other) const {
@@ -89,11 +89,10 @@ bool BoundingBox::IsBoxIntersected(const BoundingBox& other) const {
   // Second category of cases separating along b's axes.
   for (int i = 0; i < 3; ++i) {
     // if (std::abs(t.dot(r.block<3, 1>(0, i))) >
-        // other.xyz_2_[i] + xyz_2_.dot(abs_r.block<3, 1>(0, i))) {
+    // other.xyz_2_[i] + xyz_2_.dot(abs_r.block<3, 1>(0, i))) {
     const maliput::math::Vector3 r_i = r.col(i);
     const maliput::math::Vector3 abs_r_i = abs_r.col(i);
-    if (std::abs(t.dot(r_i)) >
-        other.xyz_2_[i] + xyz_2_.dot(abs_r_i)) {
+    if (std::abs(t.dot(r_i)) > other.xyz_2_[i] + xyz_2_.dot(abs_r_i)) {
       return false;
     }
   }
@@ -106,9 +105,9 @@ bool BoundingBox::IsBoxIntersected(const BoundingBox& other) const {
     int j1 = 1;
     for (int j = 0; j < 3; ++j) {
       const int j2 = (j1 + 1) % 3;
-      if (std::abs(t[i2] * r[i1][j] - t[i1] * r[i2][j]) >
-          xyz_2_[i1] * abs_r[i2][j] + xyz_2_[i2] * abs_r[i1][j] +
-              other.xyz_2_[j1] * abs_r[i][j2] + other.xyz_2_[j2] * abs_r[i][j1]) {
+      if (std::abs(t[i2] * r[i1][j] - t[i1] * r[i2][j]) > xyz_2_[i1] * abs_r[i2][j] + xyz_2_[i2] * abs_r[i1][j] +
+                                                              other.xyz_2_[j1] * abs_r[i][j2] +
+                                                              other.xyz_2_[j2] * abs_r[i][j1]) {
         return false;
       }
       j1 = j2;
