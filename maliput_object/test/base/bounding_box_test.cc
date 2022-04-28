@@ -233,6 +233,9 @@ TEST_F(BoundingBoxOverlappingTest, IsBoxContained) {
   EXPECT_FALSE(dut.IsBoxContained(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
 }
 
+// Tests IsBoxIntersected method. The method is based on Drake's implementation of
+// drake::geometry::internal::BoxesOverlap() method. See
+// https://github.com/RobotLocomotion/drake/blob/master/geometry/proximity/boxes_overlap.cc
 TEST_F(BoundingBoxOverlappingTest, IsBoxIntersected) {
   // Smaller cube in same location and orientation. -> It contains it so there is intersection.
   EXPECT_TRUE(dut.IsBoxIntersected(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
