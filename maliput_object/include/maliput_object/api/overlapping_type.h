@@ -5,25 +5,25 @@ namespace object {
 namespace api {
 
 /// Holds the possible overlapping types between Objects' region.
-///  - Example of use:
-/// @code {.cpp}
-/// void MyMethod(OverlappingType type);
-/// ...
-/// MyMethod(OverlappingType::kContained | OverlappingType::kIntersected);
-/// @endcode
+///
+/// Given two sets `A` and `B` :
+/// - `A` intersects `B` iff `A` and `B` have at least one point in common.
+/// - `A` contains `B` iff `A` contains all the points of `B`.
+///   (Note that `A` contains `B` iff `A` intersects `B` and `B` contains `A`.)
+/// - `A` disjoints `B` iff `A` and `B` have no points in common.
+///
 ///  - Example of use:
 /// @code {.cpp}
 /// OverlappingType MyMethod();
 /// ...
-/// if(OverlappingType::kContained & MyMethod() == OverlappingType::kContained) {
+/// if(OverlappingType::kIntersected & MyMethod() == OverlappingType::kIntersected) {
 ///  // Do something.
 /// }
 /// @endcode
 enum class OverlappingType : unsigned int {
-  kDisjointed = 0,                   ///< No overlapping between bounding regions
-  kIntersected = 1 << 0,             ///< Bounding regions intersects.
-  kContained = 1 << 1,               ///< Entire bounding region is contained within another.
-  kAll = kIntersected | kContained,  ///< All overlapping types.
+  kDisjointed = 0,   ///< No overlapping between bounding regions
+  kIntersected = 1,  ///< Bounding regions are intersected.
+  kContained = 3,    ///< Bounding regions are contained.
 };
 
 // Union operator.
