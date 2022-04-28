@@ -234,13 +234,13 @@ TEST_F(BoundingBoxOverlappingTest, IsBoxContained) {
 }
 
 TEST_F(BoundingBoxOverlappingTest, IsBoxIntersected) {
-  // Smaller cube in same location and orientation. -> It contains it, there is no intersection.
-  EXPECT_FALSE(dut.IsBoxIntersected(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
+  // Smaller cube in same location and orientation. -> It contains it so there is intersection.
+  EXPECT_TRUE(dut.IsBoxIntersected(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
   // Larger cube in same location and orientation. -> Intersects.
   EXPECT_TRUE(dut.IsBoxIntersected(BoundingBox(position, {5., 5., 5.}, rpy, kTolerance)));
   // Same cube in same location and different orientation. -> Intersects.
   EXPECT_TRUE(dut.IsBoxIntersected(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
-  // Same cube in different location and same orientation. -> It doesn't intersect.
+  // Same cube in different location. -> It doesn't intersect.
   EXPECT_FALSE(dut.IsBoxIntersected(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
 }
 
@@ -251,13 +251,12 @@ TEST_F(BoundingBoxOverlappingTest, Overlaps) {
   EXPECT_EQ(api::OverlappingType::kContained, region->Overlaps(BoundingBox(position, {3., 3., 3.}, rpy, kTolerance)));
   // Same cube in same location and orientation. -> OverlappingType::kContained.
   EXPECT_EQ(api::OverlappingType::kContained, region->Overlaps(BoundingBox(position, box_size, rpy, kTolerance)));
-  // Same cube in different location and same orientation. -> OverlappingType::kDisjointed.
+  // Same cube in a different location, no points in common. -> OverlappingType::kDisjointed.
   EXPECT_EQ(api::OverlappingType::kDisjointed,
             region->Overlaps(BoundingBox({-1, -2., -3.}, box_size, rpy, kTolerance)));
   // Same cube in same location and different orientation. -> OverlappingType::kIntersected.
   EXPECT_EQ(api::OverlappingType::kIntersected,
             region->Overlaps(BoundingBox(position, box_size, {0., 0., 0.}, kTolerance)));
-  // TODO: Adds tests for OverlappingType::kIntersected
 }
 
 }  // namespace
