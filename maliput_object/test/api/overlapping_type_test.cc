@@ -10,9 +10,9 @@ namespace test {
 namespace {
 
 TEST(OverlappingTypeTest, TestOverlappingType) {
-  EXPECT_EQ(OverlappingType::kContained, OverlappingType::kContained & OverlappingType::kAll);
-  EXPECT_EQ(OverlappingType::kIntersected, OverlappingType::kIntersected & OverlappingType::kAll);
-  EXPECT_EQ(OverlappingType::kAll, OverlappingType::kIntersected | OverlappingType::kContained);
+  EXPECT_EQ(OverlappingType::kIntersected, OverlappingType::kContained & OverlappingType::kIntersected);
+  EXPECT_EQ(OverlappingType::kDisjointed, OverlappingType::kContained & OverlappingType::kDisjointed);
+  EXPECT_EQ(OverlappingType::kContained, (OverlappingType::kContained | OverlappingType::kIntersected));
 }
 
 }  // namespace
