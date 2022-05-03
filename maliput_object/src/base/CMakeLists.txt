@@ -4,6 +4,7 @@
 
 set(BASE_SOURCES
   bounding_box.cc
+  simple_object_query.cc
 )
 
 add_library(base ${BASE_SOURCES})
@@ -22,8 +23,11 @@ target_include_directories(base
 
 target_link_libraries(base
   PUBLIC
+  maliput::api
   maliput::common
   maliput::math
+  maliput::routing
+  maliput_object::api
 )
 
 ##############################################################################
