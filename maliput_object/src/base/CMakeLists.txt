@@ -4,6 +4,7 @@
 
 set(BASE_SOURCES
   bounding_box.cc
+  manual_object_book.cc
 )
 
 add_library(base ${BASE_SOURCES})
@@ -24,6 +25,7 @@ target_link_libraries(base
   PUBLIC
   maliput::common
   maliput::math
+  maliput_object::api
 )
 
 ##############################################################################

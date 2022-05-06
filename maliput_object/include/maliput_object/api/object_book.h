@@ -7,7 +7,6 @@
 #include <unordered_map>
 
 #include <maliput/common/maliput_copyable.h>
-#include <maliput/math/vector.h>
 
 #include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"

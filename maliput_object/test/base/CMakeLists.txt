@@ -1,3 +1,4 @@
+ament_add_gmock(manual_object_book_test manual_object_book_test.cc)
 ament_add_gtest(bounding_box_test bounding_box_test.cc)
 
 macro(add_dependencies_to_test target)
@@ -12,6 +13,7 @@ macro(add_dependencies_to_test target)
 
       target_link_libraries(${target}
         maliput::common
+        maliput_object::api
         maliput_object::base
       )
 
@@ -19,3 +21,4 @@ macro(add_dependencies_to_test target)
 endmacro()
 
 add_dependencies_to_test(bounding_box_test)
+add_dependencies_to_test(manual_object_book_test)
