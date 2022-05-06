@@ -71,12 +71,35 @@ std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanes
     }
   }
 
-  if (overlapping_type == api::OverlappingType::kIntersected) {
-    return overlapping_lanes;
-  } else if (overlapping_type == api::OverlappingType::kContained) {
-    MALIPUT_THROW_MESSAGE("Not implemented yet for kContained overlapping type.");
-  } else {
-    MALIPUT_THROW_MESSAGE("Not implemented yet for kDisjointed overlapping type.");
+  switch (overlapping_type) {
+    case api::OverlappingType::kIntersected: {
+      return overlapping_lanes;
+      break;
+    }
+    case api::OverlappingType::kDisjointed: {
+      const auto lanes = road_network_->road_geometry()->ById().GetLanes();
+      std::vector<const maliput::api::Lane*> disjointed_lanes;
+      disjointed_lanes.reserve(lanes.size() - overlapping_lanes.size());
+      std::for_each(lanes.begin(), lanes.end(),
+                    [&disjointed_lanes, &overlapping_lanes](
+                        const std::pair<maliput::api::LaneId, const maliput::api::Lane*>& lane_id_lane) {
+                      if (overlapping_lanes.end() == std::find_if(overlapping_lanes.begin(), overlapping_lanes.end(),
+                                                                  [&lane_id_lane](const maliput::api::Lane* lane) {
+                                                                    return lane->id() == lane_id_lane.first;
+                                                                  })) {
+                        disjointed_lanes.push_back(lane_id_lane.second);
+                      }
+                    });
+      return disjointed_lanes;
+      break;
+    }
+    case api::OverlappingType::kContained: {
+      // TODO(#22): Implement kContained case.
+      MALIPUT_THROW_MESSAGE("Not implemented yet for kContained overlapping type.");
+      break;
+    }
+    default:
+      MALIPUT_THROW_MESSAGE("Not a valid overlapping type.");
   }
 }
 
