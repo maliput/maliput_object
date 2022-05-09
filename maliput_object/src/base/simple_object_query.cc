@@ -28,8 +28,7 @@ std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanes
   MALIPUT_THROW_UNLESS(object != nullptr);
   std::vector<const maliput::api::Lane*> overlapping_lanes;
 
-  // TODO(francocipollone): BoundingRegion should provide a method to obtain the vertices of the bounding region to
-  // avoid casting.
+  // TODO(#25): The following assumes vertices are available and the bounding region is a BoundingBox.
   const auto bb = static_cast<const BoundingBox&>(object->bounding_region());
   const auto vertices = bb.get_vertices();
 
@@ -40,7 +39,7 @@ std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanes
     const std::vector<maliput::api::RoadPositionResult> road_position_results =
         road_network_->road_geometry()->FindRoadPositions(maliput::api::InertialPosition::FromXyz(vertex), radius);
     // The RoadPositionResults contain the closest points to the lanes contained in the sphere,
-    // There could be lanes that even though overlapp with the object, their closest point to the vertex is outside the
+    // There could be lanes that even though overlap with the object, their closest point to the vertex is outside the
     // bounding region, leading to not tracking those lanes. Therefore, once the lanes located in the sphere are
     // obtained, they are queried to obtain the closest RoadPosition to the center of bounding region.
     for (const auto& road_position_result : road_position_results) {
