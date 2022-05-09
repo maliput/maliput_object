@@ -54,10 +54,10 @@ class ManualObjectBookTest : public ::testing::Test {
 
 TEST_F(ManualObjectBookTest, ManualObjectBook) {
   // Find by Id.
-  EXPECT_EQ(kObjectAPtr->id(), dut_.FindById(kIdA)->id());
+  ASSERT_EQ(kObjectAPtr->id(), dut_.FindById(kIdA)->id());
   // Find by predicate.
   const auto objects_by_predicate = dut_.FindByPredicate(
-      [this](const api::Object<Vector3>* object) { return object->get_property(this->kPropertyB).has_value(); });
+      [this](const api::Object<Vector3>* object) { return object->get_property(kPropertyB).has_value(); });
   ASSERT_EQ(1, static_cast<int>(objects_by_predicate.size()));
   EXPECT_EQ(kObjectBPtr->id(), objects_by_predicate.front()->id());
 
@@ -70,7 +70,7 @@ TEST_F(ManualObjectBookTest, ManualObjectBook) {
       .WillOnce(::testing::Return(api::OverlappingType::kIntersected));
   const auto objects_by_region = dut_.FindOverlappingIn(*kRegionAPtr, api::OverlappingType::kContained);
   ASSERT_EQ(1, static_cast<int>(objects_by_region.size()));
-  EXPECT_EQ(kObjectAPtr->id(), objects_by_region.front()->id());
+  ASSERT_EQ(kObjectAPtr->id(), objects_by_region.front()->id());
 
   dut_.RemoveObject(kObjectAPtr->id());
   EXPECT_EQ(1, static_cast<int>(dut_.objects().size()));
