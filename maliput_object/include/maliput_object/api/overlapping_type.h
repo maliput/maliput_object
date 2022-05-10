@@ -9,7 +9,6 @@ namespace api {
 /// Given two sets `A` and `B` :
 /// - `A` intersects `B` iff `A` and `B` have at least one point in common.
 /// - `A` contains `B` iff `A` contains all the points of `B`.
-///   (Note that `A` contains `B` iff `A` intersects `B` and `B` contains `A`.)
 /// - `A` disjoints `B` iff `A` and `B` have no points in common.
 ///
 ///  - Example of use:
