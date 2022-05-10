@@ -11,9 +11,9 @@
 /// @section maliput_object_yaml YAML format specification for objects
 ///
 /// The maliput::object API provides two functions to load a concrete
-/// maliput::object::api::ObjectBook implementation from a YAML description. One
-/// is thought for files ( @ref maliput::object::loader::LoadFile() "LoadFile()")
-/// and the other for string serialized YAML descriptions ( @ref maliput::object::loader::Load() "Load()" ).
+/// maliput::object::api::ObjectBook implementation from a YAML description:
+/// - @ref maliput::object::loader::LoadFile() for YAML files.
+/// - @ref maliput::object::loader::Load() for string serialized YAML descriptions.
 ///
 /// The only supported type of coordinate is maliput::math::Vector3 , meaning
 /// that concrete @ref maliput::object::api::BoundingRegion "BoundingRegions"
