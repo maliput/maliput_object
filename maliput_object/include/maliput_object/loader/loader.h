@@ -45,7 +45,7 @@
 /// <h4>`maliput_objects`</h4>
 ///
 /// `maliput_objects` is a dictionary of objects. Every first level key
-/// identifies a new maliput::api::Object:
+/// identifies a new @ref maliput::object::api::Object :
 ///
 /// @code{.yml}
 ///
