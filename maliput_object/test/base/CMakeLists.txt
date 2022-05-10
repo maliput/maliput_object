@@ -1,3 +1,4 @@
+ament_add_gmock(simple_object_query_test simple_object_query_test.cc)
 ament_add_gtest(bounding_box_test bounding_box_test.cc)
 
 macro(add_dependencies_to_test target)
@@ -11,7 +12,10 @@ macro(add_dependencies_to_test target)
       )
 
       target_link_libraries(${target}
+        maliput::api
         maliput::common
+        maliput::test_utilities
+        maliput_object::api
         maliput_object::base
       )
 
@@ -19,3 +23,4 @@ macro(add_dependencies_to_test target)
 endmacro()
 
 add_dependencies_to_test(bounding_box_test)
+add_dependencies_to_test(simple_object_query_test)
