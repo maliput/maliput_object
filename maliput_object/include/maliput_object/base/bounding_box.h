@@ -24,6 +24,7 @@ class BoundingBox : public api::BoundingRegion<maliput::math::Vector3> {
   /// box.
   /// @param box_size The size of the bounding box on XYZ (length/width,height)
   /// @param orientation Orientation of the box in the Inertial-frame.
+  /// @param tolerance Used to compute IsBoxContained() nad IsBoxIntersected() against other BoundinBoxes.
   /// @throws maliput::common::assertion_error When tolerance or any box_size's component are negative.
   BoundingBox(const maliput::math::Vector3& position, const maliput::math::Vector3& box_size,
               const maliput::math::RollPitchYaw& orientation, double tolerance);
