@@ -12,6 +12,9 @@ BoundingBox::BoundingBox(const maliput::math::Vector3& position, const maliput::
       tolerance_(tolerance),
       xyz_2_(box_size.x() / 2., box_size.y() / 2., box_size.z() / 2.) {
   MALIPUT_THROW_UNLESS(tolerance >= 0.);
+  MALIPUT_THROW_UNLESS(box_size.x() >= 0.);
+  MALIPUT_THROW_UNLESS(box_size.y() >= 0.);
+  MALIPUT_THROW_UNLESS(box_size.z() >= 0.);
 }
 
 const maliput::math::Vector3& BoundingBox::do_position() const { return position_; }
@@ -29,6 +32,8 @@ std::vector<maliput::math::Vector3> BoundingBox::get_vertices() const {
   }
   return vertices;
 }
+
+const maliput::math::Vector3& BoundingBox::box_size() const { return box_size_; }
 
 const maliput::math::RollPitchYaw& BoundingBox::get_orientation() const { return orientation_; }
 
