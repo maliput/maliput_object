@@ -207,6 +207,21 @@ TEST_P(BoundingBoxTest, GetVertices) {
   }
 }
 
+TEST_P(BoundingBoxTest, GetBoxSize) {
+  BoundingBox dut{case_.position, case_.box_size, case_.rpy, kTolerance};
+  EXPECT_EQ(case_.box_size, dut.box_size());
+}
+
+TEST_P(BoundingBoxTest, GetPosition) {
+  BoundingBox dut{case_.position, case_.box_size, case_.rpy, kTolerance};
+  EXPECT_EQ(case_.position, dut.position());
+}
+
+TEST_P(BoundingBoxTest, GetOrientation) {
+  BoundingBox dut{case_.position, case_.box_size, case_.rpy, kTolerance};
+  EXPECT_EQ(case_.rpy.vector(), dut.get_orientation().vector());
+}
+
 INSTANTIATE_TEST_CASE_P(BoundingBoxTestGroup, BoundingBoxTest, ::testing::ValuesIn(GetTestParameters()));
 
 class BoundingBoxOverlappingTest : public ::testing::Test {
