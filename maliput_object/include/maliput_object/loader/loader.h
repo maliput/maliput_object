@@ -8,6 +8,13 @@
 
 #include "maliput/object/api/object_book.h"
 
+/// @file loader.h
+/// @page maliput_object_yaml_spec Maliput Object YAML specification
+/// @author Agustin Alba Chicar
+/// @author Franco Cipollone
+/// @date May 12, 2022
+/// @tableofcontents
+///
 /// @section maliput_object_yaml YAML format specification for objects
 ///
 /// The maliput::object API provides two functions to load a concrete
@@ -26,10 +33,9 @@
 /// @code{.yml}
 /// maliput_objects:
 ///   my_awesome_object:
-///     pose:
+///     bounding_region:
 ///       position: [1.2, 3.4, 4.5]
 ///       rotation: [0.1745329, 0.3490659, 0.5235988]
-///     bounding_region:
 ///       type: box
 ///       box_size: [1.1, 2.2, 3.3]
 ///     properties:
@@ -44,7 +50,7 @@
 ///
 /// <h4>`maliput_objects`</h4>
 ///
-/// `maliput_objects` is a dictionary of objects. Every first level key
+/// `maliput_object` is a dictionary of objects. Every first level key
 /// identifies a new @ref maliput::object::api::Object :
 ///
 /// @code{.yml}
@@ -59,25 +65,6 @@
 ///
 /// @endcode
 ///
-/// <h4>`pose`</h4>
-///
-/// The maliput::api::Object's `pose` is a mapping that contains two keys:
-/// `position` and `rotation`.
-///
-/// @code{.yml}
-///
-/// pose:
-///   position: [X, Y, Z]
-///   rotation: [R, P, Y]
-///
-/// @endcode
-///
-/// Where:
-///
-/// - `position`: is the Inertial Frame position described as a 3D Vector: @f$[X, Y, Z]@f$.
-/// - `rotation`: is the Inertial Frame rotation described as a 3D Vector of
-///   Euler angles @f$[R, P, Y]@f$ (roll, pitch, yaw).
-///
 /// <h4>`bounding_region`</h4>
 ///
 /// A mapping describing a bounding region. For boxes:
@@ -85,15 +72,21 @@
 /// @code{.yml}
 ///
 /// bounding_region:
+///   position: [X, Y, Z]
+///   rotation: [R, P, Y]
 ///   type: box
-///   box_size: [W, D, H]
+///   box_size: [L, D, H]
 ///
 /// @endcode
 ///
 /// Where:
 ///
+/// - `position`: is the Inertial Frame position described as a 3D Vector: @f$[X, Y, Z]@f$.
+/// - `rotation`: is the Inertial Frame rotation described as a 3D Vector of Euler angles
+///   @f$[R, P, Y]@f$ (roll, pitch, yaw).
 /// - `type`: must be `box`.
-/// - `box_size`: is a 3D vector with the box size expressed as @f$[Width, Depth, Height]@f$.
+/// - `box_size`: the size of the bounding box expressed as if the box is at the origin of
+///   the Inertial Frame and aligned with it. Each coordinate means  @f$[Length, Depth, Height]@f$.
 ///
 /// <h4>`properties`</h4>
 ///
@@ -115,7 +108,6 @@
 ///
 /// - `user_defined_prop_1` and `user_defined_prop_n` are examples of keys.
 /// - `my_value_1` and `my_value_n` are examples of values.
-
 namespace maliput {
 namespace object {
 namespace loader {
