@@ -3,8 +3,8 @@
 <package format="3">
   <name>maliput_object_py</name>
   <version>1.0.0</version>
-  <description>Maliput Object</description>
-  <maintainer email="eloy.briceno@ekumenlabs.com">Eloy Briceno</maintainer>
+  <description>Maliput Object bindings</description>
+  <maintainer email="daniel.stonier@tri.global">Daniel Stonier</maintainer>
   <license file="../LICENSE">BSD Clause 3</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
