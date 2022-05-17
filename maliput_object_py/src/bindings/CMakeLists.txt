@@ -17,7 +17,7 @@ target_include_directories(api_py
 
 target_link_libraries(api_py
   PRIVATE
-    maliput::api
+    maliput_object::api
     pybind11::module
 )
 
