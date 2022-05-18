@@ -11,10 +11,10 @@ macro(add_dependencies_to_test target)
       )
 
       target_link_libraries(${target}
+        fmt::fmt
         maliput::api
         maliput::common
         maliput::test_utilities
-        fmt::fmt
         maliput_object::api
         maliput_object::base
         maliput_object::loader
