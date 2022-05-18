@@ -16,14 +16,14 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(api, m) {
   py::class_<api::BoundingRegion<maliput::math::Vector3>>(m, "BoundingRegion")
-      //.def(py::init<>())
+      .def(py::init<>())
       .def("position", &api::BoundingRegion<maliput::math::Vector3>::position,
            py::return_value_policy::reference_internal)
       .def("Contains", &api::BoundingRegion<maliput::math::Vector3>::Contains, py::arg("position"))
       .def("Overlaps", &api::BoundingRegion<maliput::math::Vector3>::Overlaps, py::arg("other"));
 
   py::class_<api::ObjectBook<maliput::math::Vector3>>(m, "ObjectBook")
-      //.def(py::init<>())
+      .def(py::init<>())
       .def("objects", &api::ObjectBook<maliput::math::Vector3>::objects, py::return_value_policy::reference_internal)
       .def("FindById", &api::ObjectBook<maliput::math::Vector3>::FindById)
       .def("FindByPredicate", &api::ObjectBook<maliput::math::Vector3>::FindByPredicate)
@@ -31,7 +31,7 @@ PYBIND11_MODULE(api, m) {
            py::arg("overlapping_type"));
 
   py::class_<api::ObjectQuery>(m, "ObjectQuery")
-      //.def(py::init<>())
+      .def(py::init<>())
       .def("FindOverlappingLanesIn",
            py::overload_cast<const api::Object<maliput::math::Vector3>*>(&api::ObjectQuery::FindOverlappingLanesIn,
                                                                          py::const_),
@@ -55,19 +55,20 @@ PYBIND11_MODULE(api, m) {
       .def(py::init<const api::Object<maliput::math::Vector3>::Id&, const std::map<std::string, std::string>&,
                     std::unique_ptr<api::BoundingRegion<maliput::math::Vector3>>>(),
            py::arg("id"), py::arg("properties"), py::arg("region"))
-      .def("id", &api::Object<maliput::math::Vector3>::id, py::return_value_policy::reference_internal)
+      .def("id", &api::Object<maliput::math::Vector3>::id)
       .def("bounding_region", &api::Object<maliput::math::Vector3>::bounding_region,
            py::return_value_policy::reference_internal)
       .def("position", &api::Object<maliput::math::Vector3>::position, py::return_value_policy::reference_internal)
       .def("get_properties", &api::Object<maliput::math::Vector3>::get_properties,
            py::return_value_policy::reference_internal)
-      .def("get_property", &api::Object<maliput::math::Vector3>::get_property, py::arg("key"),
-           py::return_value_policy::reference_internal);
+      .def("get_property", &api::Object<maliput::math::Vector3>::get_property, py::arg("key"));
 
   py::enum_<api::OverlappingType>(m, "OverlappingType", py::arithmetic())
       .value("kDisjointed", api::OverlappingType::kDisjointed)
       .value("kIntersected", api::OverlappingType::kIntersected)
-      .value("kContained", api::OverlappingType::kContained);
+      .value("kContained", api::OverlappingType::kContained)
+      .def("__and__", api::operator&)
+      .def("__or__", api::operator|);
 }
 }  // namespace bindings
 }  // namespace object

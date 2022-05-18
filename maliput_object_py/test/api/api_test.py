@@ -30,9 +30,16 @@ class TestMaliputObjectApi(unittest.TestCase):
         self.assertEqual("dut", dut.string())
 
     def test_overlapping_type_membes(self):
+        """
+        Tests that Overlapping Type members and operators.
+        """
         self.assertEqual(OverlappingType(0), OverlappingType.kDisjointed)
         self.assertEqual(OverlappingType(1), OverlappingType.kIntersected)
         self.assertEqual(OverlappingType(3), OverlappingType.kContained)
+        dut = OverlappingType.kContained & OverlappingType.kIntersected
+        self.assertEqual(OverlappingType.kIntersected, dut)
+        dut = OverlappingType.kContained | OverlappingType.kIntersected
+        self.assertEqual(OverlappingType.kContained, dut)
 
     def test_bounding_region_methods(self):
         """
