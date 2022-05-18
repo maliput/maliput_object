@@ -6,7 +6,7 @@ set(LOADER_SOURCES
   loader.cc
 )
 
-add_library(loader ${BASE_SOURCES})
+add_library(loader ${LOADER_SOURCES})
 
 add_library(maliput_object::loader ALIAS loader)
 
@@ -26,6 +26,7 @@ target_link_libraries(loader
   maliput::math
   maliput_object::api
   maliput_object::base
+  yaml-cpp
 )
 
 ##############################################################################

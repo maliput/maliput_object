@@ -6,7 +6,7 @@
 
 #include <maliput/math/vector.h>
 
-#include "maliput/object/api/object_book.h"
+#include "maliput_object/api/object_book.h"
 
 /// @file loader.h
 /// @page maliput_object_yaml_spec Maliput Object YAML specification
@@ -22,7 +22,7 @@
 /// - @ref maliput::object::loader::LoadFile() for YAML files.
 /// - @ref maliput::object::loader::Load() for string serialized YAML descriptions.
 ///
-/// The only supported type of coordinate is @ref maliput::math::Vector3 , meaning
+/// The only supported type of coordinate is maliput::math::Vector3 , meaning
 /// that concrete @ref maliput::object::api::BoundingRegion "BoundingRegions"
 /// are limited to @ref maliput::object::BoundingBox "BoundingBox".
 ///
