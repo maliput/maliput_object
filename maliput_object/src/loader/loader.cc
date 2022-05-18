@@ -102,9 +102,8 @@ std::unique_ptr<maliput::object::api::ObjectBook<maliput::math::Vector3>> BuildF
   MALIPUT_THROW_UNLESS(objects_node.IsDefined());
   MALIPUT_THROW_UNLESS(objects_node.IsMap());
   auto object_book = std::make_unique<ManualObjectBook<maliput::math::Vector3>>();
-  for (YAML::const_iterator object_node_it = objects_node.begin(); object_node_it != objects_node.end();
-       ++object_node_it) {
-    object_book->AddObject(ParseObject(object_node_it->first.as<std::string>(), object_node_it->second, kTolerance));
+  for (const auto& object_node : objects_node) {
+    object_book->AddObject(ParseObject(object_node.first.as<std::string>(), object_node.second, kTolerance));
   }
   return object_book;
 }

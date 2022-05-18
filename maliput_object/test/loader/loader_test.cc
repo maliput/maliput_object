@@ -9,6 +9,7 @@
 #include <fmt/ostream.h>
 #include <gtest/gtest.h>
 #include <maliput/common/assertion_error.h>
+#include <maliput/math/matrix.h>
 #include <maliput/math/roll_pitch_yaw.h>
 #include <maliput/math/vector.h>
 
@@ -192,7 +193,7 @@ TEST(LoadTest, OneValidObject) {
   const double kPitch{.5};
   const double kYaw{.6};
   const double kLength{7.};
-  const double kWidth{8.};
+  const double kDepth{8.};
   const double kHeight{9.};
   const std::string kKey{"a_key"};
   const std::string kValue{"a value"};
@@ -208,7 +209,7 @@ maliput_objects:
     properties:
       {}: "{}" 
 )R",
-      kObjectId, kX, kY, kZ, kRoll, kPitch, kYaw, kLength, kWidth, kHeight, kKey, kValue);
+      kObjectId, kX, kY, kZ, kRoll, kPitch, kYaw, kLength, kDepth, kHeight, kKey, kValue);
 
   std::unique_ptr<api::ObjectBook<maliput::math::Vector3>> object_book;
   object_book = Load(dut);
@@ -234,7 +235,16 @@ maliput_objects:
   ASSERT_DOUBLE_EQ(kRoll, bounding_box->get_orientation().roll_angle());
   ASSERT_DOUBLE_EQ(kPitch, bounding_box->get_orientation().pitch_angle());
   ASSERT_DOUBLE_EQ(kYaw, bounding_box->get_orientation().yaw_angle());
-  // TODO(#15): verify vertices to assert box size.
+
+  // Computes the position of the top-right corner.
+  const maliput::math::Vector3 top_right_corner_position =
+      maliput::math::RollPitchYaw(kRoll, kPitch, kYaw).ToMatrix().inverse() *
+          maliput::math::Vector3(kLength / 2., kDepth / 2., kHeight / 2.) +
+      maliput::math::Vector3(kX, kY, kZ);
+  const maliput::math::Vector3 top_right_corner_position_ut = bounding_box->get_vertices().front();
+  ASSERT_DOUBLE_EQ(top_right_corner_position.x(), top_right_corner_position_ut.x());
+  ASSERT_DOUBLE_EQ(top_right_corner_position.y(), top_right_corner_position_ut.y());
+  ASSERT_DOUBLE_EQ(top_right_corner_position.z(), top_right_corner_position_ut.z());
 }
 
 }  // namespace
