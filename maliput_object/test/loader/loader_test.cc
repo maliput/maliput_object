@@ -1,6 +1,7 @@
 // Copyright 2022 Toyota Research Institute
 #include "maliput_object/loader/loader.h"
 
+#include <fstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -13,6 +14,7 @@
 #include <maliput/math/roll_pitch_yaw.h>
 #include <maliput/math/vector.h>
 
+#include "maliput/common/filesystem.h"
 #include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
@@ -184,21 +186,26 @@ TEST_P(SchemaParserCheckTest, AssertsThatItThrowsWhenSchemaIsIncorrect) {
 INSTANTIATE_TEST_CASE_P(SchemaParserCheckTestGroup, SchemaParserCheckTest,
                         ::testing::ValuesIn(GetYamlsWithSchemaErrors()));
 
-TEST(LoadTest, OneValidObject) {
-  const std::string kObjectId{"object_id"};
-  const double kX{1.0};
-  const double kY{2.0};
-  const double kZ{3.0};
-  const double kRoll{.4};
-  const double kPitch{.5};
-  const double kYaw{.6};
-  const double kLength{7.};
-  const double kDepth{8.};
-  const double kHeight{9.};
-  const std::string kKey{"a_key"};
-  const std::string kValue{"a value"};
-  const std::string dut = fmt::format(
-      R"R(---
+struct ObjectTestFeatures {
+  static constexpr const char* kObjectId{"object_id"};
+  static constexpr double kX{1.0};
+  static constexpr double kY{2.0};
+  static constexpr double kZ{3.0};
+  static constexpr double kRoll{.4};
+  static constexpr double kPitch{.5};
+  static constexpr double kYaw{.6};
+  static constexpr double kLength{7.};
+  static constexpr double kDepth{8.};
+  static constexpr double kHeight{9.};
+  static constexpr const char* kKey{"a_key"};
+  static constexpr const char* kValue{"a value"};
+
+  ObjectTestFeatures() = default;
+  virtual ~ObjectTestFeatures() = default;
+
+  static std::string GenerateYamlString() {
+    return fmt::format(
+        R"R(---
 maliput_objects:
   {}:
     bounding_region:
@@ -209,42 +216,81 @@ maliput_objects:
     properties:
       {}: "{}" 
 )R",
-      kObjectId, kX, kY, kZ, kRoll, kPitch, kYaw, kLength, kDepth, kHeight, kKey, kValue);
+        kObjectId, kX, kY, kZ, kRoll, kPitch, kYaw, kLength, kDepth, kHeight, kKey, kValue);
+  }
 
-  std::unique_ptr<api::ObjectBook<maliput::math::Vector3>> object_book;
-  object_book = Load(dut);
-  ASSERT_NE(nullptr, object_book);
-  ASSERT_EQ(1u, object_book->objects().size());
+  static void TestObjectBook(const api::ObjectBook<maliput::math::Vector3>* object_book) {
+    ASSERT_NE(nullptr, object_book);
+    ASSERT_EQ(1u, object_book->objects().size());
 
-  const Object<maliput::math::Vector3>::Id id{kObjectId};
-  Object<maliput::math::Vector3>* object = object_book->FindById(id);
-  ASSERT_NE(nullptr, object);
-  ASSERT_EQ(id, object->id());
-  ASSERT_DOUBLE_EQ(kX, object->position().x());
-  ASSERT_DOUBLE_EQ(kY, object->position().y());
-  ASSERT_DOUBLE_EQ(kZ, object->position().z());
-  ASSERT_EQ(1u, object->get_properties().size());
-  ASSERT_EQ(kValue, object->get_property(kKey));
+    const Object<maliput::math::Vector3>::Id id{kObjectId};
+    Object<maliput::math::Vector3>* object = object_book->FindById(id);
+    ASSERT_NE(nullptr, object);
+    ASSERT_EQ(id, object->id());
+    ASSERT_DOUBLE_EQ(kX, object->position().x());
+    ASSERT_DOUBLE_EQ(kY, object->position().y());
+    ASSERT_DOUBLE_EQ(kZ, object->position().z());
+    ASSERT_EQ(1u, object->get_properties().size());
+    ASSERT_EQ(kValue, object->get_property(kKey));
 
-  const BoundingRegion<maliput::math::Vector3>& bounding_region = object->bounding_region();
-  const BoundingBox* bounding_box = dynamic_cast<const BoundingBox*>(&bounding_region);
-  ASSERT_NE(nullptr, bounding_box);
-  ASSERT_DOUBLE_EQ(kX, bounding_box->position().x());
-  ASSERT_DOUBLE_EQ(kY, bounding_box->position().y());
-  ASSERT_DOUBLE_EQ(kZ, bounding_box->position().z());
-  ASSERT_DOUBLE_EQ(kRoll, bounding_box->get_orientation().roll_angle());
-  ASSERT_DOUBLE_EQ(kPitch, bounding_box->get_orientation().pitch_angle());
-  ASSERT_DOUBLE_EQ(kYaw, bounding_box->get_orientation().yaw_angle());
+    const BoundingRegion<maliput::math::Vector3>& bounding_region = object->bounding_region();
+    const BoundingBox* bounding_box = dynamic_cast<const BoundingBox*>(&bounding_region);
+    ASSERT_NE(nullptr, bounding_box);
+    ASSERT_DOUBLE_EQ(kX, bounding_box->position().x());
+    ASSERT_DOUBLE_EQ(kY, bounding_box->position().y());
+    ASSERT_DOUBLE_EQ(kZ, bounding_box->position().z());
+    ASSERT_DOUBLE_EQ(kRoll, bounding_box->get_orientation().roll_angle());
+    ASSERT_DOUBLE_EQ(kPitch, bounding_box->get_orientation().pitch_angle());
+    ASSERT_DOUBLE_EQ(kYaw, bounding_box->get_orientation().yaw_angle());
 
-  // Computes the position of the top-right corner.
-  const maliput::math::Vector3 top_right_corner_position =
-      maliput::math::RollPitchYaw(kRoll, kPitch, kYaw).ToMatrix().inverse() *
-          maliput::math::Vector3(kLength / 2., kDepth / 2., kHeight / 2.) +
-      maliput::math::Vector3(kX, kY, kZ);
-  const maliput::math::Vector3 top_right_corner_position_ut = bounding_box->get_vertices().front();
-  ASSERT_DOUBLE_EQ(top_right_corner_position.x(), top_right_corner_position_ut.x());
-  ASSERT_DOUBLE_EQ(top_right_corner_position.y(), top_right_corner_position_ut.y());
-  ASSERT_DOUBLE_EQ(top_right_corner_position.z(), top_right_corner_position_ut.z());
+    // Computes the position of the top-right corner.
+    const maliput::math::Vector3 top_right_corner_position =
+        maliput::math::RollPitchYaw(kRoll, kPitch, kYaw).ToMatrix().inverse() *
+            maliput::math::Vector3(kLength / 2., kDepth / 2., kHeight / 2.) +
+        maliput::math::Vector3(kX, kY, kZ);
+    const maliput::math::Vector3 top_right_corner_position_ut = bounding_box->get_vertices().front();
+    ASSERT_DOUBLE_EQ(top_right_corner_position.x(), top_right_corner_position_ut.x());
+    ASSERT_DOUBLE_EQ(top_right_corner_position.y(), top_right_corner_position_ut.y());
+    ASSERT_DOUBLE_EQ(top_right_corner_position.z(), top_right_corner_position_ut.z());
+  }
+};
+
+TEST(LoadFromStringTest, OneValidObject) {
+  std::unique_ptr<api::ObjectBook<maliput::math::Vector3>> object_book = Load(ObjectTestFeatures::GenerateYamlString());
+  ObjectTestFeatures::TestObjectBook(object_book.get());
+}
+
+class LoadFromFileTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    directory_.set_as_temp();
+    directory_.append("LoadObjectsFromYamlFileTest");
+    ASSERT_TRUE(common::Filesystem::create_directory(directory_));
+
+    filepath_ = directory_.get_path() + "/objects_test.yaml";
+    GenerateYamlFileFromString(ObjectTestFeatures::GenerateYamlString(), filepath_);
+  }
+
+  void TearDown() override {
+    if (!filepath_.empty()) {
+      EXPECT_TRUE(common::Filesystem::remove_file(common::Path(filepath_)));
+    }
+    ASSERT_TRUE(common::Filesystem::remove_directory(directory_));
+  }
+
+  static void GenerateYamlFileFromString(const std::string& string_to_yaml, const std::string& filepath) {
+    std::ofstream os(filepath);
+    fmt::print(os, string_to_yaml);
+  }
+
+  maliput::common::Path directory_;
+  std::string objects_string_;
+  std::string filepath_;
+};
+
+TEST_F(LoadFromFileTest, EvaluateLoadFromFile) {
+  std::unique_ptr<api::ObjectBook<maliput::math::Vector3>> object_book = LoadFile(filepath_);
+  ObjectTestFeatures::TestObjectBook(object_book.get());
 }
 
 }  // namespace
