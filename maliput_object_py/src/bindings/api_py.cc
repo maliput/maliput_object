@@ -16,14 +16,12 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(api, m) {
   py::class_<api::BoundingRegion<maliput::math::Vector3>>(m, "BoundingRegion")
-      .def(py::init<>())
       .def("position", &api::BoundingRegion<maliput::math::Vector3>::position,
            py::return_value_policy::reference_internal)
       .def("Contains", &api::BoundingRegion<maliput::math::Vector3>::Contains, py::arg("position"))
       .def("Overlaps", &api::BoundingRegion<maliput::math::Vector3>::Overlaps, py::arg("other"));
 
   py::class_<api::ObjectBook<maliput::math::Vector3>>(m, "ObjectBook")
-      .def(py::init<>())
       .def("objects", &api::ObjectBook<maliput::math::Vector3>::objects, py::return_value_policy::reference_internal)
       .def("FindById", &api::ObjectBook<maliput::math::Vector3>::FindById)
       .def("FindByPredicate", &api::ObjectBook<maliput::math::Vector3>::FindByPredicate)
@@ -31,7 +29,6 @@ PYBIND11_MODULE(api, m) {
            py::arg("overlapping_type"));
 
   py::class_<api::ObjectQuery>(m, "ObjectQuery")
-      .def(py::init<>())
       .def("FindOverlappingLanesIn",
            py::overload_cast<const api::Object<maliput::math::Vector3>*>(&api::ObjectQuery::FindOverlappingLanesIn,
                                                                          py::const_),
