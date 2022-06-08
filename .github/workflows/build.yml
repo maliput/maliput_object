@@ -8,7 +8,6 @@ on:
 
 env:
   PACKAGE_NAME: maliput_object
-  OTHER_PACKAGE_NAME: maliput_object_py
   ROS_DISTRO: foxy
   ROS_WS: maliput_ws
 
@@ -53,12 +52,12 @@ jobs:
       working-directory: ${{ env.ROS_WS }}
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
-        colcon build --packages-up-to ${PACKAGE_NAME} ${OTHER_PACKAGE_NAME} \
+        colcon build --packages-up-to ${PACKAGE_NAME} \
           --event-handlers=console_direct+
     - name: colcon test
       shell: bash
       working-directory: ${{ env.ROS_WS }}
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
-        colcon test --packages-select ${PACKAGE_NAME} ${OTHER_PACKAGE_NAME} --event-handlers=console_direct+;
+        colcon test --packages-select ${PACKAGE_NAME} --event-handlers=console_direct+;
         colcon test-result --verbose;
