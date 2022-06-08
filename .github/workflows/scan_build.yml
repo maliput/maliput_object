@@ -7,7 +7,6 @@ on:
 
 env:
   PACKAGE_NAME: maliput_object
-  OTHER_PACKAGE_NAME: maliput_object_py
   ROS_DISTRO: foxy
   ROS_WS: maliput_ws
 
@@ -62,8 +61,8 @@ jobs:
       working-directory: ${{ env.ROS_WS }}
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
-        colcon build --packages-up-to ${PACKAGE_NAME} ${OTHER_PACKAGE_NAME} \
-          --packages-skip ${PACKAGE_NAME} ${OTHER_PACKAGE_NAME} \
+        colcon build --packages-up-to ${PACKAGE_NAME} \
+          --packages-skip ${PACKAGE_NAME} \
           --event-handlers=console_direct+
     - name: scan_build
       shell: bash
@@ -71,5 +70,5 @@ jobs:
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
         ./src/${PACKAGE_NAME}/.github/run_scan_build \
-            --packages-select ${PACKAGE_NAME} ${OTHER_PACKAGE_NAME} \
+            --packages-select ${PACKAGE_NAME} \
             --event-handlers=console_direct+;
