@@ -2,8 +2,8 @@
 Changelog for package maliput_object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2022-06-10)
+------------------
 * Use <doc_depend> for ament_cmake_doxygen dependency. (`#39 <https://github.com/maliput/maliput_object/issues/39>`_)
 * Moves package to root. (`#38 <https://github.com/maliput/maliput_object/issues/38>`_)
 * Removes maliput_object_py from the repo (`#37 <https://github.com/maliput/maliput_object/issues/37>`_)
