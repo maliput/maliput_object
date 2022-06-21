@@ -2,8 +2,8 @@
 Changelog for package maliput_object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.1 (2022-06-21)
+------------------
 * Fixes include folder installation. (`#41 <https://github.com/maliput/maliput_object/issues/41>`_)
 * Uses ros-action-ci for main workflow. (`#40 <https://github.com/maliput/maliput_object/issues/40>`_)
 * Contributors: Franco Cipollone
