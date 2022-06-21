@@ -35,11 +35,11 @@ jobs:
       CXX: clang++-8
       LDFLAGS: -fuse-ld=lld-8
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         path: ${{ env.ROS_WS }}/src/${{ env.PACKAGE_NAME }}
     # use setup-ros action to get vcs, rosdep, and colcon
-    - uses: ros-tooling/setup-ros@0.2.1
+    - uses: ros-tooling/setup-ros@v0.3
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     - name: clang 8 install
@@ -49,13 +49,6 @@ jobs:
       shell: bash
       working-directory: ${{ env.ROS_WS }}
       run: vcs import src < src/${PACKAGE_NAME}/.github/dependencies.repos
-    # clone private dependencies
-    - uses: actions/checkout@v2
-      with:
-        repository: ToyotaResearchInstitute/maliput
-        fetch-depth: 0
-        path: ${{ env.ROS_WS }}/src/maliput
-        token: ${{ secrets.MALIPUT_TOKEN }}
     - name: check if dependencies have a matching branch
       shell: bash
       working-directory: ${{ env.ROS_WS }}/src
