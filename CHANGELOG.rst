@@ -2,6 +2,12 @@
 Changelog for package maliput_object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixes include folder installation. (`#41 <https://github.com/maliput/maliput_object/issues/41>`_)
+* Uses ros-action-ci for main workflow. (`#40 <https://github.com/maliput/maliput_object/issues/40>`_)
+* Contributors: Franco Cipollone
+
 0.1.0 (2022-06-10)
 ------------------
 * Use <doc_depend> for ament_cmake_doxygen dependency. (`#39 <https://github.com/maliput/maliput_object/issues/39>`_)
@@ -27,5 +33,4 @@ Changelog for package maliput_object
 * Adds BoundingRegion api class. (`#6 <https://github.com/maliput/maliput_object/issues/6>`_)
 * Setup maliput_object repository/package (`#2 <https://github.com/maliput/maliput_object/issues/2>`_)
 * Initial commit
-  Create LICENSE file.
 * Contributors: Agustin Alba Chicar, Franco Cipollone, Voldivh
