@@ -34,12 +34,12 @@
 
 #include <maliput/api/road_network.h>
 #include <maliput/common/maliput_copyable.h>
+#include <maliput/math/overlapping_type.h>
 #include <maliput/math/vector.h>
 
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
 #include "maliput_object/api/object_query.h"
-#include "maliput_object/api/overlapping_type.h"
 
 namespace maliput {
 namespace object {
@@ -57,8 +57,8 @@ class SimpleObjectQuery : public api::ObjectQuery {
  private:
   std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(
       const api::Object<maliput::math::Vector3>* object) const;
-  std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(const api::Object<maliput::math::Vector3>* object,
-                                                                  const api::OverlappingType& overlapping_type) const;
+  std::vector<const maliput::api::Lane*> DoFindOverlappingLanesIn(
+      const api::Object<maliput::math::Vector3>* object, const maliput::math::OverlappingType& overlapping_type) const;
   std::optional<const maliput::api::LaneSRoute> DoRoute(const api::Object<maliput::math::Vector3>* origin,
                                                         const api::Object<maliput::math::Vector3>* target) const;
   const api::ObjectBook<maliput::math::Vector3>* do_object_book() const;

@@ -36,8 +36,7 @@
 
 #include <maliput/api/type_specific_identifier.h>
 #include <maliput/common/maliput_copyable.h>
-
-#include "maliput_object/api/bounding_region.h"
+#include <maliput/math/bounding_region.h>
 
 namespace maliput {
 namespace object {
@@ -56,7 +55,7 @@ class Object {
   /// @param region Object's bounding region.
   /// @tparam Coordinate Coordinate of the bounding region instance.
   Object(const Id& id, const std::map<std::string, std::string>& properties,
-         std::unique_ptr<BoundingRegion<Coordinate>> region);
+         std::unique_ptr<maliput::math::BoundingRegion<Coordinate>> region);
 
   ~Object() = default;
 
@@ -64,7 +63,7 @@ class Object {
   Id id() const;
 
   /// @returns The bounding region of the object.
-  const BoundingRegion<Coordinate>& bounding_region() const;
+  const maliput::math::BoundingRegion<Coordinate>& bounding_region() const;
 
   /// @returns The position of the object in the Inertial-.
   const Coordinate& position() const;
@@ -78,7 +77,7 @@ class Object {
  private:
   const Id id_;
   const std::map<std::string, std::string> properties_;
-  const std::unique_ptr<BoundingRegion<Coordinate>> region_;
+  const std::unique_ptr<maliput::math::BoundingRegion<Coordinate>> region_;
 };
 
 }  // namespace api

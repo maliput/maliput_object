@@ -35,11 +35,11 @@
 #include <unordered_map>
 
 #include <maliput/common/maliput_copyable.h>
+#include <maliput/math/bounding_region.h>
+#include <maliput/math/overlapping_type.h>
 
-#include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
-#include "maliput_object/api/overlapping_type.h"
 
 namespace maliput {
 namespace object {
@@ -67,7 +67,8 @@ class ManualObjectBook : public api::ObjectBook<Coordinate> {
   virtual std::vector<api::Object<Coordinate>*> DoFindByPredicate(
       std::function<bool(const api::Object<Coordinate>*)> predicate) const override;
   virtual std::vector<api::Object<Coordinate>*> DoFindOverlappingIn(
-      const api::BoundingRegion<Coordinate>& region, const api::OverlappingType& overlapping_type) const override;
+      const maliput::math::BoundingRegion<Coordinate>& region,
+      const maliput::math::OverlappingType& overlapping_type) const override;
 
   std::unordered_map<typename api::Object<Coordinate>::Id, std::unique_ptr<api::Object<Coordinate>>> objects_;
 };

@@ -78,7 +78,8 @@ std::vector<api::Object<Coordinate>*> ManualObjectBook<Coordinate>::DoFindByPred
 
 template <typename Coordinate>
 std::vector<api::Object<Coordinate>*> ManualObjectBook<Coordinate>::DoFindOverlappingIn(
-    const api::BoundingRegion<Coordinate>& region, const api::OverlappingType& overlapping_type) const {
+    const maliput::math::BoundingRegion<Coordinate>& region,
+    const maliput::math::OverlappingType& overlapping_type) const {
   std::vector<api::Object<Coordinate>*> result;
   std::for_each(objects_.begin(), objects_.end(), [&region, &overlapping_type, &result](const auto& pair) {
     if ((pair.second->bounding_region().Overlaps(region) & overlapping_type) == overlapping_type) {

@@ -38,15 +38,15 @@
 #include <fmt/ostream.h>
 #include <gtest/gtest.h>
 #include <maliput/common/assertion_error.h>
+#include <maliput/math/bounding_box.h>
+#include <maliput/math/bounding_region.h>
 #include <maliput/math/matrix.h>
 #include <maliput/math/roll_pitch_yaw.h>
 #include <maliput/math/vector.h>
 
 #include "maliput/common/filesystem.h"
-#include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
-#include "maliput_object/base/bounding_box.h"
 
 namespace maliput {
 namespace object {
@@ -54,8 +54,8 @@ namespace loader {
 namespace test {
 namespace {
 
-using maliput::object::BoundingBox;
-using maliput::object::api::BoundingRegion;
+using maliput::math::BoundingBox;
+using maliput::math::BoundingRegion;
 using maliput::object::api::Object;
 
 // @{ Asserts that no file or no string with YAML content throws.

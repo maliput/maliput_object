@@ -34,10 +34,10 @@
 #include <utility>
 
 #include <maliput/common/maliput_throw.h>
+#include <maliput/math/bounding_box.h>
 #include <yaml-cpp/yaml.h>
 
 #include "maliput_object/api/object.h"
-#include "maliput_object/base/bounding_box.h"
 #include "maliput_object/base/manual_object_book.h"
 
 namespace YAML {
@@ -89,7 +89,7 @@ namespace {
 // TODO(#15): Decide to pass it as a construction argument or read it from the input file.
 constexpr const double kTolerance{1e-3};
 
-std::unique_ptr<BoundingBox> ParseBoundingBox(const YAML::Node& node, double tolerance) {
+std::unique_ptr<maliput::math::BoundingBox> ParseBoundingBox(const YAML::Node& node, double tolerance) {
   MALIPUT_THROW_UNLESS(node.IsMap());
   MALIPUT_THROW_UNLESS(node["position"].IsDefined());
   MALIPUT_THROW_UNLESS(node["rotation"].IsDefined());
@@ -100,7 +100,7 @@ std::unique_ptr<BoundingBox> ParseBoundingBox(const YAML::Node& node, double tol
   const maliput::math::RollPitchYaw& rotation = node["rotation"].as<maliput::math::RollPitchYaw>();
   const maliput::math::Vector3 box_size = node["box_size"].as<maliput::math::Vector3>();
 
-  return std::make_unique<BoundingBox>(position, box_size, rotation, tolerance);
+  return std::make_unique<maliput::math::BoundingBox>(position, box_size, rotation, tolerance);
 }
 
 std::map<std::string, std::string> ParseProperties(const YAML::Node& node) {
@@ -118,7 +118,7 @@ std::unique_ptr<api::Object<maliput::math::Vector3>> ParseObject(const std::stri
                                                                  double tolerance) {
   MALIPUT_THROW_UNLESS(node["bounding_region"].IsDefined());
   MALIPUT_THROW_UNLESS(node["properties"].IsDefined());
-  std::unique_ptr<BoundingBox> bounding_box = ParseBoundingBox(node["bounding_region"], tolerance);
+  std::unique_ptr<maliput::math::BoundingBox> bounding_box = ParseBoundingBox(node["bounding_region"], tolerance);
   const std::map<std::string, std::string> properties = ParseProperties(node["properties"]);
   return std::make_unique<api::Object<maliput::math::Vector3>>(api::Object<maliput::math::Vector3>::Id(id), properties,
                                                                std::move(bounding_box));

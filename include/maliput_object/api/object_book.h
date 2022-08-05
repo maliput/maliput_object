@@ -35,10 +35,10 @@
 #include <unordered_map>
 
 #include <maliput/common/maliput_copyable.h>
+#include <maliput/math/bounding_region.h>
+#include <maliput/math/overlapping_type.h>
 
-#include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
-#include "maliput_object/api/overlapping_type.h"
 
 namespace maliput {
 namespace object {
@@ -73,8 +73,8 @@ class ObjectBook {
   /// @param region BoundaryRegion used for finding intersected Objects.
   /// @param overlapping_type Indicates type of overlapping. See #OverlappingType.
   /// @returns The Objects intersecting @p region with the given @p overlapping_type .
-  std::vector<Object<Coordinate>*> FindOverlappingIn(const BoundingRegion<Coordinate>& region,
-                                                     const OverlappingType& overlapping_type) const {
+  std::vector<Object<Coordinate>*> FindOverlappingIn(const maliput::math::BoundingRegion<Coordinate>& region,
+                                                     const maliput::math::OverlappingType& overlapping_type) const {
     return DoFindOverlappingIn(region, overlapping_type);
   }
 
@@ -86,8 +86,9 @@ class ObjectBook {
   virtual Object<Coordinate>* DoFindById(const typename Object<Coordinate>::Id& object_id) const = 0;
   virtual std::vector<Object<Coordinate>*> DoFindByPredicate(
       std::function<bool(const Object<Coordinate>*)> predicate) const = 0;
-  virtual std::vector<Object<Coordinate>*> DoFindOverlappingIn(const BoundingRegion<Coordinate>& region,
-                                                               const OverlappingType& overlapping_type) const = 0;
+  virtual std::vector<Object<Coordinate>*> DoFindOverlappingIn(
+      const maliput::math::BoundingRegion<Coordinate>& region,
+      const maliput::math::OverlappingType& overlapping_type) const = 0;
 };
 
 }  // namespace api

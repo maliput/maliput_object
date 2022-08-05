@@ -51,8 +51,8 @@
 /// - @ref maliput::object::loader::Load() for string serialized YAML descriptions.
 ///
 /// The only supported type of coordinate is maliput::math::Vector3 , meaning
-/// that concrete @ref maliput::object::api::BoundingRegion "BoundingRegions"
-/// are limited to @ref maliput::object::BoundingBox "BoundingBox".
+/// that concrete @ref maliput::math::BoundingRegion "BoundingRegions"
+/// are limited to @ref maliput::math::BoundingBox "BoundingBox".
 ///
 /// @subsection maliput_object_yaml_format YAML format
 ///
