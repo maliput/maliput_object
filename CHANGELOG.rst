@@ -2,6 +2,13 @@
 Changelog for package maliput_object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Moves BoundingRegion, BoundingBox and OverlappingType to maliput (`#44 <https://github.com/maliput/maliput_object/issues/44>`_)
+* Adds triage workflow. (`#43 <https://github.com/maliput/maliput_object/issues/43>`_)
+* Improves README. (`#42 <https://github.com/maliput/maliput_object/issues/42>`_)
+* Contributors: Franco Cipollone
+
 0.1.1 (2022-06-21)
 ------------------
 * Fixes include folder installation. (`#41 <https://github.com/maliput/maliput_object/issues/41>`_)
