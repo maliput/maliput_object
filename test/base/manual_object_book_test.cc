@@ -37,12 +37,12 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <maliput/math/bounding_region.h>
 #include <maliput/math/vector.h>
+#include <maliput/test_utilities/mock_math.h>
 
-#include "maliput_object/api/bounding_region.h"
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
-#include "maliput_object/test_utilities/mock.h"
 
 namespace maliput {
 namespace object {
@@ -64,15 +64,17 @@ class ManualObjectBookTest : public ::testing::Test {
   const std::string kPropertyA{"PropertyA"};
   const std::string kPropertyB{"PropertyB"};
   // Object A.
-  std::unique_ptr<test_utilities::MockBoundingRegion> kRegionA = std::make_unique<test_utilities::MockBoundingRegion>();
-  const test_utilities::MockBoundingRegion* kRegionAPtr{kRegionA.get()};
+  std::unique_ptr<maliput::math::test::MockBoundingRegion> kRegionA =
+      std::make_unique<maliput::math::test::MockBoundingRegion>();
+  const maliput::math::test::MockBoundingRegion* kRegionAPtr{kRegionA.get()};
   std::unique_ptr<api::Object<Vector3>> kObjectA = std::make_unique<api::Object<Vector3>>(
       kIdA, std::map<std::string, std::string>{{kPropertyA, "DescriptionA"}}, std::move(kRegionA));
   const api::Object<Vector3>* kObjectAPtr{kObjectA.get()};
 
   // Object B.
-  std::unique_ptr<test_utilities::MockBoundingRegion> kRegionB = std::make_unique<test_utilities::MockBoundingRegion>();
-  const test_utilities::MockBoundingRegion* kRegionBPtr{kRegionB.get()};
+  std::unique_ptr<maliput::math::test::MockBoundingRegion> kRegionB =
+      std::make_unique<maliput::math::test::MockBoundingRegion>();
+  const maliput::math::test::MockBoundingRegion* kRegionBPtr{kRegionB.get()};
   std::unique_ptr<api::Object<Vector3>> kObjectB = std::make_unique<api::Object<Vector3>>(
       kIdB, std::map<std::string, std::string>{{kPropertyB, "DescriptionB"}}, std::move(kRegionB));
   const api::Object<Vector3>* kObjectBPtr{kObjectB.get()};
@@ -92,11 +94,11 @@ TEST_F(ManualObjectBookTest, ManualObjectBook) {
   // Find by bounding region.
   EXPECT_CALL(*kRegionAPtr, DoOverlaps(::testing::_))
       .Times(1)
-      .WillOnce(::testing::Return(api::OverlappingType::kContained));
+      .WillOnce(::testing::Return(maliput::math::OverlappingType::kContained));
   EXPECT_CALL(*kRegionBPtr, DoOverlaps(::testing::_))
       .Times(1)
-      .WillOnce(::testing::Return(api::OverlappingType::kIntersected));
-  const auto objects_by_region = dut_.FindOverlappingIn(*kRegionAPtr, api::OverlappingType::kContained);
+      .WillOnce(::testing::Return(maliput::math::OverlappingType::kIntersected));
+  const auto objects_by_region = dut_.FindOverlappingIn(*kRegionAPtr, maliput::math::OverlappingType::kContained);
   ASSERT_EQ(1, static_cast<int>(objects_by_region.size()));
   ASSERT_EQ(kObjectAPtr->id(), objects_by_region.front()->id());
 

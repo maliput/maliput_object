@@ -3,7 +3,6 @@
 ##############################################################################
 
 set(BASE_SOURCES
-  bounding_box.cc
   manual_object_book.cc
   simple_object_query.cc
 )

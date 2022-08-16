@@ -32,9 +32,8 @@
 #include <algorithm>
 
 #include <maliput/common/maliput_throw.h>
+#include <maliput/math/bounding_box.h>
 #include <maliput/routing/derive_lane_s_routes.h>
-
-#include "maliput_object/base/bounding_box.h"
 
 namespace maliput {
 namespace object {
@@ -49,15 +48,15 @@ SimpleObjectQuery::SimpleObjectQuery(const maliput::api::RoadNetwork* road_netwo
 std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanesIn(
     const api::Object<maliput::math::Vector3>* object) const {
   MALIPUT_THROW_UNLESS(object != nullptr);
-  return DoFindOverlappingLanesIn(object, api::OverlappingType::kIntersected);
+  return DoFindOverlappingLanesIn(object, maliput::math::OverlappingType::kIntersected);
 }
 std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanesIn(
-    const api::Object<maliput::math::Vector3>* object, const api::OverlappingType& overlapping_type) const {
+    const api::Object<maliput::math::Vector3>* object, const maliput::math::OverlappingType& overlapping_type) const {
   MALIPUT_THROW_UNLESS(object != nullptr);
   std::vector<const maliput::api::Lane*> overlapping_lanes;
 
-  // TODO(#25): The following assumes vertices are available and the bounding region is a BoundingBox.
-  const auto bb = static_cast<const BoundingBox&>(object->bounding_region());
+  // TODO(#25): The following assumes vertices are available and the bounding region is a maliput::math::BoundingBox.
+  const auto bb = static_cast<const maliput::math::BoundingBox&>(object->bounding_region());
   const auto vertices = bb.get_vertices();
 
   for (const auto& vertex : vertices) {
@@ -99,11 +98,11 @@ std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanes
   }
 
   switch (overlapping_type) {
-    case api::OverlappingType::kIntersected: {
+    case maliput::math::OverlappingType::kIntersected: {
       return overlapping_lanes;
       break;
     }
-    case api::OverlappingType::kDisjointed: {
+    case maliput::math::OverlappingType::kDisjointed: {
       const auto lanes = road_network_->road_geometry()->ById().GetLanes();
       std::vector<const maliput::api::Lane*> disjointed_lanes;
       disjointed_lanes.reserve(lanes.size() - overlapping_lanes.size());
@@ -120,7 +119,7 @@ std::vector<const maliput::api::Lane*> SimpleObjectQuery::DoFindOverlappingLanes
       return disjointed_lanes;
       break;
     }
-    case api::OverlappingType::kContained: {
+    case maliput::math::OverlappingType::kContained: {
       // TODO(#22): Implement kContained case.
       MALIPUT_THROW_MESSAGE("Not implemented yet for kContained overlapping type.");
       break;

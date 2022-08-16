@@ -37,7 +37,7 @@ namespace api {
 
 template <typename Coordinate>
 Object<Coordinate>::Object(const Id& id, const std::map<std::string, std::string>& properties,
-                           std::unique_ptr<BoundingRegion<Coordinate>> region)
+                           std::unique_ptr<maliput::math::BoundingRegion<Coordinate>> region)
     : id_(id), properties_(properties), region_(std::move(region)) {}
 
 template <typename Coordinate>
@@ -46,7 +46,7 @@ typename Object<Coordinate>::Id Object<Coordinate>::id() const {
 }
 
 template <typename Coordinate>
-const BoundingRegion<Coordinate>& Object<Coordinate>::bounding_region() const {
+const maliput::math::BoundingRegion<Coordinate>& Object<Coordinate>::bounding_region() const {
   return *region_.get();
 }
 
