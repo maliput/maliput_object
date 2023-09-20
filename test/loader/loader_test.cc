@@ -30,12 +30,11 @@
 #include "maliput_object/loader/loader.h"
 
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
 #include <gtest/gtest.h>
 #include <maliput/common/assertion_error.h>
 #include <maliput/math/bounding_box.h>
@@ -79,23 +78,20 @@ std::ostream& operator<<(std::ostream& os, const SchemaParserTestCase& test_case
 // Returns a list of test cases for the schema assertions.
 std::vector<SchemaParserTestCase> GetYamlsWithSchemaErrors() {
   return {
-      {"no maliput objects key", fmt::format(
-                                     R"R(---
+      {"no maliput objects key", R"R(---
 a_maliput_key: \"Hello world!\"
 anoter_maliput_key:
   still_not_valid_key:
     - 1
     - 2
     - 3 
-)R")},
-      {"maliput_objects must be a mapping", fmt::format(
-                                                R"R(---
+)R"},
+      {"maliput_objects must be a mapping", R"R(---
 maliput_objects:
   - 1
   - 2
-)R")},
-      {"objects must contain a bounding_region", fmt::format(
-                                                     R"R(---
+)R"},
+      {"objects must contain a bounding_region", R"R(---
 maliput_objects:
   an_object:
     not_a_bounding_region:
@@ -105,9 +101,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"bounding_region must contain a position", fmt::format(
-                                                      R"R(---
+)R"},
+      {"bounding_region must contain a position", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -117,9 +112,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"bounding_region must contain a rotation", fmt::format(
-                                                      R"R(---
+)R"},
+      {"bounding_region must contain a rotation", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -129,9 +123,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"bounding_region must contain a type", fmt::format(
-                                                  R"R(---
+)R"},
+      {"bounding_region must contain a type", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -141,9 +134,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"bounding_region must contain a type and must be a box", fmt::format(
-                                                                    R"R(---
+)R"},
+      {"bounding_region must contain a type and must be a box", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -153,9 +145,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"bounding_region must contain box_size", fmt::format(
-                                                    R"R(---
+)R"},
+      {"bounding_region must contain box_size", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -165,9 +156,8 @@ maliput_objects:
       not_box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"position has no three elements", fmt::format(
-                                             R"R(---
+)R"},
+      {"position has no three elements", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -177,9 +167,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"rotation has no three elements", fmt::format(
-                                             R"R(---
+)R"},
+      {"rotation has no three elements", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -189,9 +178,8 @@ maliput_objects:
       box_size: [0.7, 0.8, 0.9]
     properties:
       a_key: a_value
-)R")},
-      {"box_size has no three elements", fmt::format(
-                                             R"R(---
+)R"},
+      {"box_size has no three elements", R"R(---
 maliput_objects:
   an_object:
     bounding_region:
@@ -201,7 +189,7 @@ maliput_objects:
       box_size: [0.7]
     properties:
       a_key: a_value
-)R")},
+)R"},
   };
 }
 
@@ -232,19 +220,18 @@ struct ObjectTestFeatures {
   virtual ~ObjectTestFeatures() = default;
 
   static std::string GenerateYamlString() {
-    return fmt::format(
-        R"R(---
-maliput_objects:
-  {}:
-    bounding_region:
-      position: [{}, {}, {}]
-      rotation: [{}, {}, {}]
-      type: box
-      box_size: [{}, {}, {}]
-    properties:
-      {}: "{}" 
-)R",
-        kObjectId, kX, kY, kZ, kRoll, kPitch, kYaw, kLength, kDepth, kHeight, kKey, kValue);
+    std::stringstream ss;
+    ss << "---\n";
+    ss << "maliput_objects:\n";
+    ss << "  " << kObjectId << ":\n";
+    ss << "    bounding_region:\n";
+    ss << "      position: [" << kX << ", " << kY << ", " << kZ << "]\n";
+    ss << "      rotation: [" << kRoll << ", " << kPitch << ", " << kYaw << "]\n";
+    ss << "      type: box\n";
+    ss << "      box_size: [" << kLength << ", " << kDepth << ", " << kHeight << "]\n";
+    ss << "    properties:\n";
+    ss << "      " << kKey << ": \"" << kValue << "\"\n";
+    return ss.str();
   }
 
   static void TestObjectBook(const api::ObjectBook<maliput::math::Vector3>* object_book) {
@@ -308,7 +295,7 @@ class LoadFromFileTest : public ::testing::Test {
 
   static void GenerateYamlFileFromString(const std::string& string_to_yaml, const std::string& filepath) {
     std::ofstream os(filepath);
-    fmt::print(os, string_to_yaml);
+    os << string_to_yaml;
   }
 
   maliput::common::Path directory_;
