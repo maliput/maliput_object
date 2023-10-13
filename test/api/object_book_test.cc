@@ -39,10 +39,10 @@
 #include <gtest/gtest.h>
 #include <maliput/math/bounding_region.h>
 #include <maliput/math/vector.h>
-#include <maliput/test_utilities/mock_math.h>
 
 #include "maliput_object/api/object.h"
 #include "maliput_object/test_utilities/mock.h"
+#include "maliput_object/test_utilities/mock_math.h"
 
 namespace maliput {
 namespace object {
@@ -55,12 +55,12 @@ using maliput::math::Vector3;
 TEST(ObjectBookTest, API) {
   test_utilities::MockObjectBook<Vector3> dut;
   const api::Object<Vector3>::Id kId{"id"};
-  const maliput::math::test::MockBoundingRegion kBoundingRegion{};
+  const test_utilities::MockBoundingRegion kBoundingRegion{};
   const maliput::math::OverlappingType kOverlappingType{maliput::math::OverlappingType::kContained |
                                                         maliput::math::OverlappingType::kIntersected};
   const std::unordered_map<api::Object<Vector3>::Id, api::Object<Vector3>*> kExpectedObjects{};
   std::unique_ptr<api::Object<Vector3>> kExpectedObjectById = std::make_unique<api::Object<Vector3>>(
-      kId, std::map<std::string, std::string>{}, std::make_unique<maliput::math::test::MockBoundingRegion>());
+      kId, std::map<std::string, std::string>{}, std::make_unique<test_utilities::MockBoundingRegion>());
   const std::vector<api::Object<Vector3>*> kExpectedObjectsByPredicate{kExpectedObjectById.get()};
   const std::vector<api::Object<Vector3>*> kExpectedObjectsByOverlapping{kExpectedObjectsByPredicate};
   const std::function<bool(const api::Object<Vector3>*)> kPredicate = [](const api::Object<Vector3>*) { return true; };

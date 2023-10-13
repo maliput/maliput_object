@@ -39,10 +39,10 @@
 #include <gtest/gtest.h>
 #include <maliput/math/bounding_region.h>
 #include <maliput/math/vector.h>
-#include <maliput/test_utilities/mock_math.h>
 
 #include "maliput_object/api/object.h"
 #include "maliput_object/api/object_book.h"
+#include "maliput_object/test_utilities/mock_math.h"
 
 namespace maliput {
 namespace object {
@@ -64,17 +64,15 @@ class ManualObjectBookTest : public ::testing::Test {
   const std::string kPropertyA{"PropertyA"};
   const std::string kPropertyB{"PropertyB"};
   // Object A.
-  std::unique_ptr<maliput::math::test::MockBoundingRegion> kRegionA =
-      std::make_unique<maliput::math::test::MockBoundingRegion>();
-  const maliput::math::test::MockBoundingRegion* kRegionAPtr{kRegionA.get()};
+  std::unique_ptr<test_utilities::MockBoundingRegion> kRegionA = std::make_unique<test_utilities::MockBoundingRegion>();
+  const test_utilities::MockBoundingRegion* kRegionAPtr{kRegionA.get()};
   std::unique_ptr<api::Object<Vector3>> kObjectA = std::make_unique<api::Object<Vector3>>(
       kIdA, std::map<std::string, std::string>{{kPropertyA, "DescriptionA"}}, std::move(kRegionA));
   const api::Object<Vector3>* kObjectAPtr{kObjectA.get()};
 
   // Object B.
-  std::unique_ptr<maliput::math::test::MockBoundingRegion> kRegionB =
-      std::make_unique<maliput::math::test::MockBoundingRegion>();
-  const maliput::math::test::MockBoundingRegion* kRegionBPtr{kRegionB.get()};
+  std::unique_ptr<test_utilities::MockBoundingRegion> kRegionB = std::make_unique<test_utilities::MockBoundingRegion>();
+  const test_utilities::MockBoundingRegion* kRegionBPtr{kRegionB.get()};
   std::unique_ptr<api::Object<Vector3>> kObjectB = std::make_unique<api::Object<Vector3>>(
       kIdB, std::map<std::string, std::string>{{kPropertyB, "DescriptionB"}}, std::move(kRegionB));
   const api::Object<Vector3>* kObjectBPtr{kObjectB.get()};
