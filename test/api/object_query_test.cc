@@ -40,10 +40,10 @@
 #include <maliput/math/bounding_region.h>
 #include <maliput/math/vector.h>
 #include <maliput/test_utilities/mock.h>
-#include <maliput/test_utilities/mock_math.h>
 
 #include "maliput_object/api/object.h"
 #include "maliput_object/test_utilities/mock.h"
+#include "maliput_object/test_utilities/mock_math.h"
 
 namespace maliput {
 namespace object {
@@ -60,7 +60,7 @@ class ObjectQueryTest : public ::testing::Test {
   const std::unique_ptr<maliput::api::RoadNetwork> road_network_ = maliput::api::test::CreateRoadNetwork();
   const std::unique_ptr<maliput::api::Lane> lane_ = maliput::api::test::CreateLane(maliput::api::LaneId{"lane_1"});
   const Object<Vector3> kObject{
-      Object<Vector3>::Id{"test_object"}, {}, std::make_unique<maliput::math::test::MockBoundingRegion>()};
+      Object<Vector3>::Id{"test_object"}, {}, std::make_unique<test_utilities::MockBoundingRegion>()};
   const maliput::math::OverlappingType kOverlappingType{maliput::math::OverlappingType::kContained};
   const api::ObjectBook<maliput::math::Vector3>* kExpectedObjectBook{object_book_.get()};
   const maliput::api::RoadNetwork* kExpectedRoadNetwork{road_network_.get()};
