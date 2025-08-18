@@ -36,7 +36,7 @@
 #include <unordered_map>
 
 #include <gtest/gtest.h>
-#include <maliput/common/assertion_error.h>
+#include <maliput/common/error.h>
 #include <maliput/math/bounding_box.h>
 #include <maliput/math/bounding_region.h>
 #include <maliput/math/matrix.h>
