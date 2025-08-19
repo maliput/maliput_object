@@ -33,7 +33,7 @@
 
 #include <gtest/gtest.h>
 #include <maliput/api/road_network.h>
-#include <maliput/common/assertion_error.h>
+#include <maliput/common/error.h>
 #include <maliput/test_utilities/mock.h>
 
 #include "maliput_object/api/object.h"
